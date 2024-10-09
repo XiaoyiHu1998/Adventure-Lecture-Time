@@ -26,7 +26,7 @@ public class MainGameManager : MonoBehaviour
     
     public void ContinueStory()
     {
-
+        Debug.LogError("COntinuing za story");
     }
 
     public void SetImage(PanelImage targetImage, string newTexture)
