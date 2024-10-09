@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TextInputManager : MonoBehaviour
 {
     public GameObject textInput;
-    //public Text textInputText;
+    private bool textInputEnabled;
+
     public TMPro.TMP_Text textInputText;
-    private bool textInputEnabled = false;
+
+    private void Start()
+    {
+        textInputEnabled = textInput.activeInHierarchy;
+    }
 
     public void ToggleTextInput()
     {
