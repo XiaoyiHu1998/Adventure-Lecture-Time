@@ -25,7 +25,6 @@ public class DialogueManager : MonoBehaviour
     {
 
         // Beyond shitty, i know
-        // inderdaad
         if (Input.GetKeyDown(KeyCode.Alpha1)) // For key 1
         {
             GenerateMesage(1);
