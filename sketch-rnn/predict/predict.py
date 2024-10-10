@@ -7,8 +7,10 @@ import ast
 import functools
 import sys
 import numpy as np
-
+import flask as fl
 import tensorflow as tf
+
+app = fl.Flask(__name__)
 
 def parse_line(ndjson_line):
   """Parse an ndjson line and return tf.Example."""
@@ -47,10 +49,6 @@ def parse_line(ndjson_line):
   f = tf.train.Features(feature=features)
   example = tf.train.Example(features=f)
   return example
-
-def get_num_classes():
-  num_classes = len(get_classes())
-  return num_classes
 
 def get_classes():
   classes = []
@@ -252,9 +250,9 @@ def model_fn(features, labels, mode, params):
       train_op=train_op,
       eval_metric_ops={"accuracy": tf.metrics.accuracy(labels, predictions)})
 
-
-def main(unused_args):
-  input_njson = '{"drawing":[[[2,38,71,108,128,139],[10,24,31,22,14,4]],[[0,13,13,3,14,50,74,143],[20,70,98,124,122,103,96,95]],[[134,133,144,144],[0,84,207,253]],[[131,148,154,153,176,176,171,154],[8,4,6,79,236,249,253,255]]]}'
+@app.route('/predict', methods=['POST'])
+def predict():
+  input_njson = fl.request.get_json()
 
   model_params = tf.contrib.training.HParams(
     num_layers=FLAGS.num_layers,
@@ -262,7 +260,7 @@ def main(unused_args):
     batch_size=1,
     num_conv=ast.literal_eval(FLAGS.num_conv),
     conv_len=ast.literal_eval(FLAGS.conv_len),
-    num_classes=get_num_classes(),
+    num_classes=len(get_classes()),
     learning_rate=FLAGS.learning_rate,
     gradient_clipping_norm=FLAGS.gradient_clipping_norm,
     cell_type=FLAGS.cell_type,
@@ -279,6 +277,7 @@ def main(unused_args):
     for i, class_probability in enumerate(prediction['logits']):
       print(classes[i], ": ", class_probability)
     print("Predicted: ", classes[prediction['predictions']])
+    return fl.jsonify({'class': classes[prediction['predictions']]})
 
 
 if __name__ == "__main__":
@@ -361,4 +360,4 @@ if __name__ == "__main__":
       help="Whether to enable batch normalization or not.")
 
   FLAGS, unparsed = parser.parse_known_args()
-  tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+  app.run(host='0.0.0.0', port=5000)

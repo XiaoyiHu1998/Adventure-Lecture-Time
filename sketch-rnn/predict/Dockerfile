@@ -10,5 +10,7 @@ COPY . .
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+EXPOSE 5000
+
 # Run train_model.py when the container launches
 CMD ["python", "./predict.py", "--model_dir", "model_cp", "--classes_file", "data/training.tfrecord.classes", "--cell_type",  "block_lstm", "--classes_file", "data/training.tfrecord.classes"]
