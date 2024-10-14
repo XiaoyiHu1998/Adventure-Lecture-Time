@@ -14,9 +14,9 @@ namespace FreeDraw
     public class Drawable : MonoBehaviour
     {
         // PEN COLOUR
-        public static Color Pen_Colour = Color.red;     // Change these to change the default drawing settings
+        public static Color Pen_Colour = Color.black;     // Change these to change the default drawing settings
         // PEN WIDTH (actually, it's a radius, in pixels)
-        public static int Pen_Width = 3;
+        public static int Pen_Width = 5;
 
 
         public delegate void Brush_Function(Vector2 world_position);
@@ -46,6 +46,7 @@ namespace FreeDraw
         Color32[] cur_colors;
         bool mouse_was_previously_held_down = false;
         bool no_drawing_on_current_drag = false;
+        List<List<List<int>>> strokes = new List<List<List<int>>>();
 
 
 
@@ -109,12 +110,24 @@ namespace FreeDraw
         {
             Vector2 pixel_pos = WorldToPixelCoordinates(world_point);
 
+            // if (previous_drag_position.x - pixel_pos.x >= 1 || previous_drag_position.y - pixel_pos.y >= 1)
+            // {
+            //     Debug.Log("PenBrush at " + pixel_pos_topleft);
+            // }
+
             cur_colors = drawable_texture.GetPixels32();
 
             if (previous_drag_position == Vector2.zero)
             {
                 // If this is the first time we've ever dragged on this image, simply colour the pixels at our mouse position
                 MarkPixelsToColour(pixel_pos, Pen_Width, Pen_Colour);
+                Vector2 pixel_pos_topleft = new Vector2(pixel_pos.x, drawable_texture.height - pixel_pos.y);
+                strokes.Add(new List<List<int>>());
+                strokes[strokes.Count - 1].Add(new List<int>());
+                strokes[strokes.Count - 1][0].Add((int)pixel_pos_topleft.x);
+                strokes[strokes.Count - 1].Add(new List<int>());
+                strokes[strokes.Count - 1][1].Add((int)pixel_pos_topleft.y);
+                Debug.Log("Strokes: " + strokes.Count);
             }
             else
             {
@@ -136,47 +149,56 @@ namespace FreeDraw
             current_brush = PenBrush;
         }
 
-
-        // FILL BRUSH, from Francesco Filipini
-        public void FillBrush(Vector2 world_position)
-        {
-            Vector2 pixel_pos = WorldToPixelCoordinates(world_position);
-            int x = (int)pixel_pos.x;
-            int y = (int)pixel_pos.y;
-
-            Color target_color = drawable_texture.GetPixel(x, y);
-            if (target_color == Pen_Colour) return;
-
-            Queue<Vector2> pixels = new Queue<Vector2>();
-            pixels.Enqueue(new Vector2(x, y));
-
-            while (pixels.Count > 0)
-            {
-                Vector2 current_pixel = pixels.Dequeue();
-                int cx = (int)current_pixel.x;
-                int cy = (int)current_pixel.y;
-
-                if (cx < 0 || cx >= drawable_texture.width || cy < 0 || cy >= drawable_texture.height) continue;
-                if (drawable_texture.GetPixel(cx, cy) != target_color) continue;
-
-                drawable_texture.SetPixel(cx, cy, Pen_Colour);
-
-                pixels.Enqueue(new Vector2(cx + 1, cy));
-                pixels.Enqueue(new Vector2(cx - 1, cy));
-                pixels.Enqueue(new Vector2(cx, cy + 1));
-                pixels.Enqueue(new Vector2(cx, cy - 1));
-            }
-
-            drawable_texture.Apply();
-        }
-
-        public void SetFillBrush()
-        {
-            current_brush = FillBrush;
-        }
         //////////////////////////////////////////////////////////////////////////////
 
 
+        public List<List<List<int>>> ScaleStrokes(List<List<List<int>>> strokes) 
+        {   
+            List<List<List<int>>> scaled_strokes = new List<List<List<int>>>();
+            // Get the maximum and minimum x and y values
+            int min_x = int.MaxValue;
+            int max_x = int.MinValue;
+            int min_y = int.MaxValue;
+            int max_y = int.MinValue;
+            for (int i = 0; i < strokes.Count; i++)
+            {
+                for (int j = 0; j < strokes[i][0].Count; j++)
+                {
+                    min_x = strokes[i][0][j] < min_x ? strokes[i][0][j] : min_x;
+                    max_x = strokes[i][0][j] > max_x ? strokes[i][0][j] : max_x;
+                    min_y = strokes[i][1][j] < min_y ? strokes[i][1][j] : min_y;
+                    max_y = strokes[i][1][j] > max_y ? strokes[i][1][j] : max_y;
+                }
+            }
+
+            // Align the strokes to the top left corner
+            for (int i = 0; i < strokes.Count; i++)
+            {
+                scaled_strokes.Add(new List<List<int>>());
+                for (int j = 0; j < strokes[i][0].Count; j++)
+                {
+                    scaled_strokes[i].Add(new List<int>());
+                    scaled_strokes[i][0].Add(strokes[i][0][j] - min_x);
+                    scaled_strokes[i].Add(new List<int>());
+                    scaled_strokes[i][1].Add(strokes[i][1][j] - min_y);
+                }
+            }
+
+            max_x -= min_x;
+            max_y -= min_y;
+            
+            // Scale the strokes to have a maximum value of 255
+            float scale_factor = 255f / Mathf.Max(max_x, max_y);
+            for (int i = 0; i < scaled_strokes.Count; i++)
+            {
+                for (int j = 0; j < scaled_strokes[i][0].Count; j++)
+                {
+                    scaled_strokes[i][0][j] = (int)(scaled_strokes[i][0][j] * scale_factor);
+                    scaled_strokes[i][1][j] = (int)(scaled_strokes[i][1][j] * scale_factor);
+                }
+            }
+            return scaled_strokes;
+        }
 
 
 
@@ -218,11 +240,100 @@ namespace FreeDraw
             {
                 previous_drag_position = Vector2.zero;
                 no_drawing_on_current_drag = false;
+                if (mouse_was_previously_held_down)
+                {
+                    // This means the user has released the mouse button
+                    // We can consider this the end of a drawing stroke
+                    List<List<List<int>>> scaled_strokes = ScaleStrokes(strokes);
+                    for (int i = 0; i < scaled_strokes.Count; i++)
+                    {
+                        scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
+                    }
+                    Debug.Log("Scaled strokes: " + scaled_strokes.Count);
+
+
+                }
             }
             mouse_was_previously_held_down = mouse_held_down;
         }
 
+        public List<List<int>> RamerDouglasPeucker(List<List<int>> stroke, float epsilon = 2.0f)
+        {
+            // Find the point with the maximum distance
+            float dmax = 0;
+            int index = 0;
+            for (int j = 1; j < stroke[0].Count - 1; j++)
+            {
+                float d = PerpendicularDistance(stroke[0][j], stroke[1][j], stroke[0][0], stroke[1][0], stroke[0][stroke[0].Count - 1], stroke[1][stroke[1].Count - 1]);
+                if (d > dmax)
+                {
+                    index = j;
+                    dmax = d;
+                }
+            }
 
+            List<List<int>> resultStroke = new List<List<int>>();
+            resultStroke.Add(new List<int>());
+            resultStroke.Add(new List<int>());
+            if (dmax > epsilon)
+            {
+                List<List<int>> left = new List<List<int>> { stroke[0].GetRange(0, index + 1), stroke[1].GetRange(0, index + 1) };
+                List<List<int>> right = new List<List<int>> { stroke[0].GetRange(index, stroke[0].Count - index), stroke[1].GetRange(index, stroke[1].Count - index) };
+                // Recursive call
+                List<List<int>> recResults1 = RamerDouglasPeucker(left, epsilon);
+                List<List<int>> recResults2 = RamerDouglasPeucker(right, epsilon);
+
+                // Build the result list
+                resultStroke[0].AddRange(recResults1[0].GetRange(0, recResults1[0].Count - 1));
+                resultStroke[0].AddRange(recResults2[0]);
+                resultStroke[1].AddRange(recResults1[1].GetRange(0, recResults1[1].Count - 1));
+                resultStroke[1].AddRange(recResults2[1]);
+            }
+            else
+            {
+                resultStroke[0].Add(stroke[0][0]);
+                resultStroke[1].Add(stroke[1][0]);
+                resultStroke[0].Add(stroke[0][stroke[0].Count - 1]);
+                resultStroke[1].Add(stroke[1][stroke[1].Count - 1]);
+            }
+            return resultStroke;
+        }
+
+        public float PerpendicularDistance(int x, int y, int x1, int y1, int x2, int y2)
+        {
+            float A = x - x1;
+            float B = y - y1;
+            float C = x2 - x1;
+            float D = y2 - y1;
+
+            float dot = A * C + B * D;
+            float len_sq = C * C + D * D;
+            float param = dot / len_sq;
+
+            float xx, yy;
+
+            if (param < 0)
+            {
+                // Point is before the line from x1, y1 to x2, y2
+                // Closest point is the start point
+                xx = x1;
+                yy = y1;
+            }
+            else if (param > 1)
+            {
+                // Point is after the line from x1, y1 to x2, y2
+                // Closest point is the end point
+                xx = x2;
+                yy = y2;
+            }
+            else
+            {
+                xx = x1 + param * C;
+                yy = y1 + param * D;
+            }
+
+            return Mathf.Sqrt((x - xx) * (x - xx) + (y - yy) * (y - yy));
+        }
 
         // Set the colour of pixels in a straight line from start_point all the way to end_point, to ensure everything inbetween is coloured
         public void ColourBetween(Vector2 start_point, Vector2 end_point, int width, Color color)
@@ -240,6 +351,9 @@ namespace FreeDraw
             {
                 cur_position = Vector2.Lerp(start_point, end_point, lerp);
                 MarkPixelsToColour(cur_position, width, color);
+                Vector2 cur_position_topleft = new Vector2(cur_position.x, drawable_texture.height - cur_position.y);
+                strokes[strokes.Count - 1][0].Add((int)cur_position_topleft.x);
+                strokes[strokes.Count - 1][1].Add((int)cur_position_topleft.y);
             }
         }
 

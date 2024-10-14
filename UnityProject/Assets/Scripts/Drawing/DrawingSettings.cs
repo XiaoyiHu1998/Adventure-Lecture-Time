@@ -66,10 +66,5 @@ namespace FreeDraw
         {
             SetMarkerColour(new Color(255f, 255f, 255f, 0.5f));
         }
-
-        public void SetFillBrush()
-        {
-            Drawable.drawable.SetFillBrush();
-        }
     }
 }
