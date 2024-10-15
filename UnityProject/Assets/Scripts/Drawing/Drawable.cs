@@ -101,15 +101,29 @@ namespace FreeDraw
         }
 
 
-
+        public void AddStroke(Vector2 pixel_pos)
+        {            
+            if (previous_drag_position == Vector2.zero)
+            {
+                Vector2 pixel_pos_topleft = new Vector2(pixel_pos.x, drawable_texture.height - pixel_pos.y);
+                strokes.Add(new List<List<int>>());
+                strokes[^1].Add(new List<int>());
+                strokes[^1][0].Add((int)pixel_pos_topleft.x);
+                strokes[^1].Add(new List<int>());
+                strokes[^1][1].Add((int)pixel_pos_topleft.y);
+                Debug.Log("Strokes: " + strokes.Count);
+            }
+            else 
+            {
+                StrokeBetween(previous_drag_position, pixel_pos);
+            }
+        }
         
         // Default brush type. Has width and colour.
         // Pass in a point in WORLD coordinates
         // Changes the surrounding pixels of the world_point to the static pen_colour
-        public void PenBrush(Vector2 world_point)
+        public void PenBrush(Vector2 pixel_pos)
         {
-            Vector2 pixel_pos = WorldToPixelCoordinates(world_point);
-
             // if (previous_drag_position.x - pixel_pos.x >= 1 || previous_drag_position.y - pixel_pos.y >= 1)
             // {
             //     Debug.Log("PenBrush at " + pixel_pos_topleft);
@@ -121,13 +135,6 @@ namespace FreeDraw
             {
                 // If this is the first time we've ever dragged on this image, simply colour the pixels at our mouse position
                 MarkPixelsToColour(pixel_pos, Pen_Width, Pen_Colour);
-                Vector2 pixel_pos_topleft = new Vector2(pixel_pos.x, drawable_texture.height - pixel_pos.y);
-                strokes.Add(new List<List<int>>());
-                strokes[strokes.Count - 1].Add(new List<int>());
-                strokes[strokes.Count - 1][0].Add((int)pixel_pos_topleft.x);
-                strokes[strokes.Count - 1].Add(new List<int>());
-                strokes[strokes.Count - 1][1].Add((int)pixel_pos_topleft.y);
-                Debug.Log("Strokes: " + strokes.Count);
             }
             else
             {
@@ -137,7 +144,6 @@ namespace FreeDraw
             ApplyMarkedPixelChanges();
 
             //Debug.Log("Dimensions: " + pixelWidth + "," + pixelHeight + ". Units to pixels: " + unitsToPixels + ". Pixel pos: " + pixel_pos);
-            previous_drag_position = pixel_pos;
         }
 
 
@@ -220,7 +226,10 @@ namespace FreeDraw
                 {
                     // We're over the texture we're drawing on!
                     // Use whatever function the current brush is
-                    current_brush(mouse_world_position);
+                    Vector2 pixel_pos = WorldToPixelCoordinates(mouse_world_position);
+                    current_brush(pixel_pos);
+                    AddStroke(pixel_pos);
+                    previous_drag_position = pixel_pos;
                 }
 
                 else
@@ -244,17 +253,23 @@ namespace FreeDraw
                 {
                     // This means the user has released the mouse button
                     // We can consider this the end of a drawing stroke
-                    List<List<List<int>>> scaled_strokes = ScaleStrokes(strokes);
-                    for (int i = 0; i < scaled_strokes.Count; i++)
-                    {
-                        scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
-                    }
-                    Debug.Log("Scaled strokes: " + scaled_strokes.Count);
+                    PredictStrokes(strokes);
 
 
                 }
             }
             mouse_was_previously_held_down = mouse_held_down;
+        }
+
+        public void PredictStrokes(List<List<List<int>>> strokes) 
+        {
+            List<List<List<int>>> scaled_strokes = ScaleStrokes(strokes);
+            for (int i = 0; i < scaled_strokes.Count; i++)
+            {
+                scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
+            }
+            Debug.Log("Scaled strokes: " + scaled_strokes.Count);
+
         }
 
         public List<List<int>> RamerDouglasPeucker(List<List<int>> stroke, float epsilon = 2.0f)
@@ -264,7 +279,7 @@ namespace FreeDraw
             int index = 0;
             for (int j = 1; j < stroke[0].Count - 1; j++)
             {
-                float d = PerpendicularDistance(stroke[0][j], stroke[1][j], stroke[0][0], stroke[1][0], stroke[0][stroke[0].Count - 1], stroke[1][stroke[1].Count - 1]);
+                float d = PerpendicularDistance(stroke[0][j], stroke[1][j], stroke[0][0], stroke[1][0], stroke[0][^1], stroke[1][^1]);
                 if (d > dmax)
                 {
                     index = j;
@@ -272,9 +287,11 @@ namespace FreeDraw
                 }
             }
 
-            List<List<int>> resultStroke = new List<List<int>>();
-            resultStroke.Add(new List<int>());
-            resultStroke.Add(new List<int>());
+            List<List<int>> resultStroke = new List<List<int>>
+            {
+                new List<int>(),
+                new List<int>()
+            };
             if (dmax > epsilon)
             {
                 List<List<int>> left = new List<List<int>> { stroke[0].GetRange(0, index + 1), stroke[1].GetRange(0, index + 1) };
@@ -293,8 +310,8 @@ namespace FreeDraw
             {
                 resultStroke[0].Add(stroke[0][0]);
                 resultStroke[1].Add(stroke[1][0]);
-                resultStroke[0].Add(stroke[0][stroke[0].Count - 1]);
-                resultStroke[1].Add(stroke[1][stroke[1].Count - 1]);
+                resultStroke[0].Add(stroke[0][^1]);
+                resultStroke[1].Add(stroke[1][^1]);
             }
             return resultStroke;
         }
@@ -335,25 +352,34 @@ namespace FreeDraw
             return Mathf.Sqrt((x - xx) * (x - xx) + (y - yy) * (y - yy));
         }
 
+        public void StrokeBetween(Vector2 start_point, Vector2 end_point)
+        {
+            float distance = Vector2.Distance(start_point, end_point);
+
+            float lerp_steps = 1 / distance;
+
+            for (float lerp = 0; lerp <= 1; lerp += lerp_steps)
+            {
+                Vector2 cur_position = Vector2.Lerp(start_point, end_point, lerp);
+                Vector2 cur_position_topleft = new Vector2(cur_position.x, drawable_texture.height - cur_position.y);
+                strokes[^1][0].Add((int)cur_position_topleft.x);
+                strokes[^1][1].Add((int)cur_position_topleft.y);            
+            }
+        }
+
         // Set the colour of pixels in a straight line from start_point all the way to end_point, to ensure everything inbetween is coloured
         public void ColourBetween(Vector2 start_point, Vector2 end_point, int width, Color color)
         {
             // Get the distance from start to finish
             float distance = Vector2.Distance(start_point, end_point);
-            Vector2 direction = (start_point - end_point).normalized;
-
-            Vector2 cur_position = start_point;
 
             // Calculate how many times we should interpolate between start_point and end_point based on the amount of time that has passed since the last update
             float lerp_steps = 1 / distance;
 
             for (float lerp = 0; lerp <= 1; lerp += lerp_steps)
             {
-                cur_position = Vector2.Lerp(start_point, end_point, lerp);
+                Vector2 cur_position = Vector2.Lerp(start_point, end_point, lerp);
                 MarkPixelsToColour(cur_position, width, color);
-                Vector2 cur_position_topleft = new Vector2(cur_position.x, drawable_texture.height - cur_position.y);
-                strokes[strokes.Count - 1][0].Add((int)cur_position_topleft.x);
-                strokes[strokes.Count - 1][1].Add((int)cur_position_topleft.y);
             }
         }
 
