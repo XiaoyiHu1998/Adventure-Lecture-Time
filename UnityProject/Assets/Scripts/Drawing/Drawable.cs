@@ -290,23 +290,25 @@ namespace FreeDraw
 
         private IEnumerator SendJsonRequest(string url, string json)
         {
-            UnityWebRequest request = new UnityWebRequest(url, "POST");
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
             {
-                Debug.LogError(request.error);
-            }
-            else
-            {
-                string response = request.downloadHandler.text;
-                //Debug.Log("Response: " + response);
-                drawingManager.SetRecognizedObjectString(response);
+                byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+                request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                request.downloadHandler = new DownloadHandlerBuffer();
+                request.SetRequestHeader("Content-Type", "application/json");
+        
+                yield return request.SendWebRequest();
+        
+                if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    Debug.LogError(request.error);
+                }
+                else
+                {
+                    string response = request.downloadHandler.text;
+                    Debug.Log("Response: " + response);
+                    //drawingManager.SetRecognizedObjectString(response);               
+                }
             }
         }
 
