@@ -50,6 +50,7 @@ namespace FreeDraw
         bool mouse_was_previously_held_down = false;
         bool no_drawing_on_current_drag = false;
         List<List<List<int>>> strokes = new List<List<List<int>>>();
+        UnityWebRequest request;
 
 
 
@@ -115,7 +116,6 @@ namespace FreeDraw
                 });
                 strokes[^1][0].Add((int)pixel_pos.x);
                 strokes[^1][1].Add((int)(drawable_texture.height - pixel_pos.y));
-                Debug.Log("Strokes: " + strokes.Count);
             }
             else if (previous_drag_position != pixel_pos)
             {
@@ -184,7 +184,6 @@ namespace FreeDraw
                     max_y = Mathf.Max(max_y, point);
                 }
             }
-            Debug.Log("Min x: " + min_x + ", Max x: " + max_x + ", Min y: " + min_y + ", Max y: " + max_y);
         
             List<List<List<int>>> scaled_strokes = new List<List<List<int>>>();
             // Align and scale the strokes
@@ -283,14 +282,17 @@ namespace FreeDraw
                 scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
             }
             json = JsonConvert.SerializeObject(new { drawing = scaled_strokes });
-            Debug.Log(json);
+            if (request != null && !request.isDone)
+            {
+                request.Abort();
+            }
             StartCoroutine(SendJsonRequest("http://127.0.0.1:5000/predict", json));
 
         }
 
         private IEnumerator SendJsonRequest(string url, string json)
         {
-            using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+            using (request = new UnityWebRequest(url, "POST"))
             {
                 byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -303,7 +305,7 @@ namespace FreeDraw
                 {
                     Debug.LogError(request.error);
                 }
-                else
+                else if (request.result == UnityWebRequest.Result.Success)
                 {
                     string response = request.downloadHandler.text;
                     Debug.Log("Response: " + response);
