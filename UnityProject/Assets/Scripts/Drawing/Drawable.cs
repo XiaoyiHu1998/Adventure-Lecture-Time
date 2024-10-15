@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Newtonsoft.Json;
 
 namespace FreeDraw
 {
@@ -166,42 +167,33 @@ namespace FreeDraw
             int max_x = int.MinValue;
             int min_y = int.MaxValue;
             int max_y = int.MinValue;
-            for (int i = 0; i < strokes.Count; i++)
+        
+            foreach (var stroke in strokes)
             {
-                for (int j = 0; j < strokes[i][0].Count; j++)
+                foreach (var point in stroke[0])
                 {
-                    min_x = strokes[i][0][j] < min_x ? strokes[i][0][j] : min_x;
-                    max_x = strokes[i][0][j] > max_x ? strokes[i][0][j] : max_x;
-                    min_y = strokes[i][1][j] < min_y ? strokes[i][1][j] : min_y;
-                    max_y = strokes[i][1][j] > max_y ? strokes[i][1][j] : max_y;
+                    min_x = Mathf.Min(min_x, point);
+                    max_x = Mathf.Max(max_x, point);
+                }
+                foreach (var point in stroke[1])
+                {
+                    min_y = Mathf.Min(min_y, point);
+                    max_y = Mathf.Max(max_y, point);
                 }
             }
-
-            // Align the strokes to the top left corner
-            for (int i = 0; i < strokes.Count; i++)
+            Debug.Log("Min x: " + min_x + ", Max x: " + max_x + ", Min y: " + min_y + ", Max y: " + max_y);
+        
+            // Align and scale the strokes
+            float scale_factor = 255f / Mathf.Max(max_x - min_x, max_y - min_y);
+            foreach (var stroke in strokes)
             {
-                scaled_strokes.Add(new List<List<int>>());
-                for (int j = 0; j < strokes[i][0].Count; j++)
+                var scaledStroke = new List<List<int>> { new List<int>(), new List<int>() };
+                for (int j = 0; j < stroke[0].Count; j++)
                 {
-                    scaled_strokes[i].Add(new List<int>());
-                    scaled_strokes[i][0].Add(strokes[i][0][j] - min_x);
-                    scaled_strokes[i].Add(new List<int>());
-                    scaled_strokes[i][1].Add(strokes[i][1][j] - min_y);
+                    scaledStroke[0].Add((int)((stroke[0][j] - min_x) * scale_factor));
+                    scaledStroke[1].Add((int)((stroke[1][j] - min_y) * scale_factor));
                 }
-            }
-
-            max_x -= min_x;
-            max_y -= min_y;
-            
-            // Scale the strokes to have a maximum value of 255
-            float scale_factor = 255f / Mathf.Max(max_x, max_y);
-            for (int i = 0; i < scaled_strokes.Count; i++)
-            {
-                for (int j = 0; j < scaled_strokes[i][0].Count; j++)
-                {
-                    scaled_strokes[i][0][j] = (int)(scaled_strokes[i][0][j] * scale_factor);
-                    scaled_strokes[i][1][j] = (int)(scaled_strokes[i][1][j] * scale_factor);
-                }
+                scaled_strokes.Add(scaledStroke);
             }
             return scaled_strokes;
         }
@@ -264,11 +256,16 @@ namespace FreeDraw
         public void PredictStrokes(List<List<List<int>>> strokes) 
         {
             List<List<List<int>>> scaled_strokes = ScaleStrokes(strokes);
+            string json = JsonConvert.SerializeObject(scaled_strokes);
+            Debug.Log(json);
             for (int i = 0; i < scaled_strokes.Count; i++)
             {
                 scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
             }
             Debug.Log("Scaled strokes: " + scaled_strokes.Count);
+            json = JsonConvert.SerializeObject(scaled_strokes);
+            Debug.Log(json);
+
 
         }
 
