@@ -15,6 +15,7 @@ namespace FreeDraw
     // 4. Hold down left mouse to draw on this texture!
     public class Drawable : MonoBehaviour
     {
+        public DrawingManager drawingManager;
         // PEN COLOUR
         public static Color Pen_Colour = Color.black;     // Change these to change the default drawing settings
         // PEN WIDTH (actually, it's a radius, in pixels)
@@ -303,7 +304,9 @@ namespace FreeDraw
             }
             else
             {
-                Debug.Log("Response: " + request.downloadHandler.text);
+                string response = request.downloadHandler.text;
+                //Debug.Log("Response: " + response);
+                drawingManager.SetRecognizedObjectString(response);
             }
         }
 

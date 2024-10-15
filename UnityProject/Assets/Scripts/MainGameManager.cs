@@ -1,5 +1,11 @@
+using LLMUnity;
+using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using TMPro;
+using TMPro.EditorUtilities;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,6 +25,19 @@ public enum PanelText
 
 public class MainGameManager : MonoBehaviour
 {
+    public StoryManager storyManager;
+    public TextInputManager textInputManager;
+    public DrawingManager drawingManager;
+
+    public UnityEngine.UI.Image mainPanelImage;
+    public UnityEngine.UI.Image characterPanelLeftImage;
+    public UnityEngine.UI.Image characterPanelRightImage;
+
+    //public void Start()
+    //{
+    //    storyManager.Continue();
+    //}
+
     public void LoadMainMenu()
     {
         SceneManager.LoadScene("MainMenuScene");
@@ -26,25 +45,52 @@ public class MainGameManager : MonoBehaviour
     
     public void ContinueStory()
     {
-        Debug.LogError("COntinuing za story");
+        Debug.LogError("Continuing za story");
+        storyManager.Continue();
     }
 
-    public void SetImage(PanelImage targetImage, string newTexture)
+    public void SubmitStoryNode(StoryNode storyNode)
     {
-        Texture loadedTexture = Resources.Load<Texture>(newTexture);
+        switch(storyNode.storyNodeType)
+        {
+            case StoryNodeType.Output:
+                UnpackOutputStoryNode(storyNode);
+                break;
+            case StoryNodeType.TextInput:
+                textInputManager.EnableTextInput();
+                break;
+            case StoryNodeType.DrawInput:
+                drawingManager.EnableDrawing();
+                break;
+        }
+    }
 
-        switch(targetImage)
+    private void UnpackOutputStoryNode(StoryNode storyNode)
+    {
+        SetText(PanelText.NamePanelText, storyNode.activeCharacterName);
+        SetText(PanelText.MainPanelText, storyNode.dialogueBoxText);
+
+        if (storyNode.background != null)
+            SetImage(PanelImage.Background, storyNode.background);
+
+        SetImage(PanelImage.CharacterLeft, storyNode.characterLeft.sprite);
+        SetImage(PanelImage.CharacterRight, storyNode.characterRight.sprite);
+    }
+
+    public void SetImage(PanelImage targetImage, Sprite sprite)
+    {
+        switch (targetImage)
         {
             case PanelImage.Background:
-                GameObject.Find("MainPanel").GetComponent<UnityEngine.UIElements.Image>().image = loadedTexture;
+                mainPanelImage.sprite = sprite;
                 break;
 
             case PanelImage.CharacterLeft:
-                GameObject.Find("CharacterPanelLeft").GetComponent<UnityEngine.UIElements.Image>().image = loadedTexture;
+                characterPanelLeftImage.sprite = sprite;
                 break;
 
             case PanelImage.CharacterRight:
-                GameObject.Find("CharacterPanelRight").GetComponent<UnityEngine.UIElements.Image>().image = loadedTexture;
+                characterPanelRightImage.sprite = sprite;
                 break;
         }
     }
@@ -54,11 +100,11 @@ public class MainGameManager : MonoBehaviour
         switch (targetText)
         {
             case PanelText.MainPanelText:
-                GameObject.Find("MainTextBox").GetComponent<Text>().text = newText;
+                GameObject.Find("MainTextBox").GetComponent<TMP_Text>().text = newText;
                 break;
 
             case PanelText.NamePanelText:
-                GameObject.Find("NameTextBox").GetComponent<Text>().text = newText;
+                GameObject.Find("NameTextBox").GetComponent<TMP_Text>().text = newText;
                 break;
         }
     }
