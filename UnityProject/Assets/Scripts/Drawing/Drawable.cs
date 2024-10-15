@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 using Newtonsoft.Json;
 
 namespace FreeDraw
@@ -106,17 +107,19 @@ namespace FreeDraw
         {            
             if (previous_drag_position == Vector2.zero)
             {
-                Vector2 pixel_pos_topleft = new Vector2(pixel_pos.x, drawable_texture.height - pixel_pos.y);
-                strokes.Add(new List<List<int>>());
-                strokes[^1].Add(new List<int>());
-                strokes[^1][0].Add((int)pixel_pos_topleft.x);
-                strokes[^1].Add(new List<int>());
-                strokes[^1][1].Add((int)pixel_pos_topleft.y);
+                // Start a new stroke if we're not dragging already
+                strokes.Add(new List<List<int>>() {
+                    new List<int>(),
+                    new List<int>()
+                });
+                strokes[^1][0].Add((int)pixel_pos.x);
+                strokes[^1][1].Add((int)(drawable_texture.height - pixel_pos.y));
                 Debug.Log("Strokes: " + strokes.Count);
             }
-            else 
+            else if (previous_drag_position != pixel_pos)
             {
-                StrokeBetween(previous_drag_position, pixel_pos);
+                strokes[^1][0].Add((int)pixel_pos.x);
+                strokes[^1][1].Add((int)(drawable_texture.height - pixel_pos.y));
             }
         }
         
@@ -161,21 +164,20 @@ namespace FreeDraw
 
         public List<List<List<int>>> ScaleStrokes(List<List<List<int>>> strokes) 
         {   
-            List<List<List<int>>> scaled_strokes = new List<List<List<int>>>();
             // Get the maximum and minimum x and y values
             int min_x = int.MaxValue;
             int max_x = int.MinValue;
             int min_y = int.MaxValue;
             int max_y = int.MinValue;
         
-            foreach (var stroke in strokes)
+            foreach (List<List<int>> stroke in strokes)
             {
-                foreach (var point in stroke[0])
+                foreach (int point in stroke[0])
                 {
                     min_x = Mathf.Min(min_x, point);
                     max_x = Mathf.Max(max_x, point);
                 }
-                foreach (var point in stroke[1])
+                foreach (int point in stroke[1])
                 {
                     min_y = Mathf.Min(min_y, point);
                     max_y = Mathf.Max(max_y, point);
@@ -183,17 +185,35 @@ namespace FreeDraw
             }
             Debug.Log("Min x: " + min_x + ", Max x: " + max_x + ", Min y: " + min_y + ", Max y: " + max_y);
         
+            List<List<List<int>>> scaled_strokes = new List<List<List<int>>>();
             // Align and scale the strokes
             float scale_factor = 255f / Mathf.Max(max_x - min_x, max_y - min_y);
             foreach (var stroke in strokes)
             {
-                var scaledStroke = new List<List<int>> { new List<int>(), new List<int>() };
+                List<List<int>> scaledStroke = new List<List<int>> { new List<int>(), new List<int>() };
                 for (int j = 0; j < stroke[0].Count; j++)
                 {
                     scaledStroke[0].Add((int)((stroke[0][j] - min_x) * scale_factor));
                     scaledStroke[1].Add((int)((stroke[1][j] - min_y) * scale_factor));
                 }
                 scaled_strokes.Add(scaledStroke);
+            }
+
+            // Remove duplicate points and interpolate between them
+            for (int i = 0; i < scaled_strokes.Count; i++)
+            {
+                List<List<int>> newStroke = new List<List<int>> { new List<int>() {scaled_strokes[i][0][0]}, new List<int>() {scaled_strokes[i][1][0]} };
+                for (int j = 1; j < scaled_strokes[i][0].Count; j++)
+                {
+                    if (scaled_strokes[i][0][j] == scaled_strokes[i][0][j - 1] && scaled_strokes[i][1][j] == scaled_strokes[i][1][j - 1])
+                    {
+                        continue;
+                    }
+                    Vector2 start_point = new Vector2(scaled_strokes[i][0][j - 1], scaled_strokes[i][1][j - 1]);
+                    Vector2 end_point = new Vector2(scaled_strokes[i][0][j], scaled_strokes[i][1][j]);
+                    StrokeBetween(start_point, end_point, newStroke);
+                }
+                scaled_strokes[i] = newStroke;
             }
             return scaled_strokes;
         }
@@ -257,16 +277,34 @@ namespace FreeDraw
         {
             List<List<List<int>>> scaled_strokes = ScaleStrokes(strokes);
             string json = JsonConvert.SerializeObject(scaled_strokes);
-            Debug.Log(json);
             for (int i = 0; i < scaled_strokes.Count; i++)
             {
                 scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
             }
-            Debug.Log("Scaled strokes: " + scaled_strokes.Count);
-            json = JsonConvert.SerializeObject(scaled_strokes);
+            json = JsonConvert.SerializeObject(new { drawing = scaled_strokes });
             Debug.Log(json);
+            StartCoroutine(SendJsonRequest("http://127.0.0.1:5000/predict", json));
 
+        }
 
+        private IEnumerator SendJsonRequest(string url, string json)
+        {
+            UnityWebRequest request = new UnityWebRequest(url, "POST");
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError(request.error);
+            }
+            else
+            {
+                Debug.Log("Response: " + request.downloadHandler.text);
+            }
         }
 
         public List<List<int>> RamerDouglasPeucker(List<List<int>> stroke, float epsilon = 2.0f)
@@ -349,7 +387,7 @@ namespace FreeDraw
             return Mathf.Sqrt((x - xx) * (x - xx) + (y - yy) * (y - yy));
         }
 
-        public void StrokeBetween(Vector2 start_point, Vector2 end_point)
+        public void StrokeBetween(Vector2 start_point, Vector2 end_point, List<List<int>> stroke)
         {
             float distance = Vector2.Distance(start_point, end_point);
 
@@ -358,9 +396,8 @@ namespace FreeDraw
             for (float lerp = 0; lerp <= 1; lerp += lerp_steps)
             {
                 Vector2 cur_position = Vector2.Lerp(start_point, end_point, lerp);
-                Vector2 cur_position_topleft = new Vector2(cur_position.x, drawable_texture.height - cur_position.y);
-                strokes[^1][0].Add((int)cur_position_topleft.x);
-                strokes[^1][1].Add((int)cur_position_topleft.y);            
+                stroke[0].Add((int)cur_position.x);
+                stroke[1].Add((int)cur_position.y);            
             }
         }
 
