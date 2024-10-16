@@ -75,6 +75,6 @@ crashlytics-build.properties
 # The LLM Model
 /UnityProject/[Aa]ssets/[Ss]treamingAssets/*
 /UnityProject/[Aa]ssets/Plugins/Android/undreamai-v1.1.12-llamacpp/*
-UnityProject/Assets/Plugins/Android/undreamai-v1.1.12-llamacpp/llama.cpp.LICENSE.txt.meta
-UnityProject/Assets/Plugins/Android/undreamai-v1.1.12-llamacpp/llama.cpp.LICENSE.txt
-UnityProject/Assets/Plugins/Android/undreamai-v1.1.12-llamacpp/libundreamai_android.so.meta
+/UnityProject/Assets/Plugins/Android/undreamai-v1.1.12-llamacpp/llama.cpp.LICENSE.txt.meta
+/UnityProject/Assets/Plugins/Android/undreamai-v1.1.12-llamacpp/llama.cpp.LICENSE.txt
+/UnityProject/Assets/Plugins/Android/undreamai-v1.1.12-llamacpp/libundreamai_android.so.meta
