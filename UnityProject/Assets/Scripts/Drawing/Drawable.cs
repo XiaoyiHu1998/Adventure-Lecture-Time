@@ -50,7 +50,6 @@ namespace FreeDraw
         bool mouse_was_previously_held_down = false;
         bool no_drawing_on_current_drag = false;
         List<List<List<int>>> strokes = new List<List<List<int>>>();
-        UnityWebRequest request;
 
 
 
@@ -282,17 +281,13 @@ namespace FreeDraw
                 scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
             }
             json = JsonConvert.SerializeObject(new { drawing = scaled_strokes });
-            if (request != null && !request.isDone)
-            {
-                request.Abort();
-            }
             StartCoroutine(SendJsonRequest("http://127.0.0.1:5000/predict", json));
 
         }
 
         private IEnumerator SendJsonRequest(string url, string json)
         {
-            using (request = new UnityWebRequest(url, "POST"))
+            using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
             {
                 byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -300,7 +295,6 @@ namespace FreeDraw
                 request.SetRequestHeader("Content-Type", "application/json");
         
                 yield return request.SendWebRequest();
-        
                 if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
                 {
                     Debug.LogError(request.error);

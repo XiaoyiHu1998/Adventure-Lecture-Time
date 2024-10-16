@@ -254,6 +254,9 @@ def model_fn(features, labels, mode, params):
 def predict():
   input_njson = fl.request.get_json()
 
+  # Convert the dictionary to a JSON string
+  input_njson_str = json.dumps(input_njson)
+
   model_params = tf.contrib.training.HParams(
     num_layers=FLAGS.num_layers,
     num_nodes=FLAGS.num_nodes,
@@ -269,7 +272,7 @@ def predict():
 
   estimator = tf.estimator.Estimator(model_fn, params=model_params, model_dir=FLAGS.model_dir)
 
-  predictions = estimator.predict(input_fn=get_input_fn(parse_line(input_njson)))
+  predictions = estimator.predict(input_fn=get_input_fn(parse_line(input_njson_str)))
 
   classes = get_classes()
 
