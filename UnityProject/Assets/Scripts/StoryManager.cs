@@ -6,10 +6,17 @@ using System;
 
 public enum StoryNodeType
 {
-    Output,
+    OutputComplete,
+    OutputIncomplete,
     TextInput,
     DrawInput
 };
+
+public enum StoryPoint
+{
+    Introduction,
+    Part2
+}
 
 public struct StoryNode
 {
@@ -33,9 +40,13 @@ public class StoryManager : MonoBehaviour
     private StoryNode initialStoryNode;
     private StoryNode currentStoryNode;
     private string LastInputText;
+    private string LastLLMOutputText;
 
     private CharacterStruct activeCharacter;
     private CharacterStruct sideCharacter;
+
+    private StoryPoint storyPoint = StoryPoint.Introduction;
+    private int progress = 0;
 
     public void Start()
     {
@@ -43,9 +54,9 @@ public class StoryManager : MonoBehaviour
         sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
 
         initialStoryNode = new StoryNode();
-        initialStoryNode.storyNodeType = StoryNodeType.Output;
-        initialStoryNode.activeCharacterName = activeCharacter.name;
-        initialStoryNode.dialogueBoxText = "Penguins can have sex with some species of seal, but their cochlea is ruined afterwards.";
+        initialStoryNode.storyNodeType = StoryNodeType.OutputComplete;
+        initialStoryNode.activeCharacterName = "???";
+        initialStoryNode.dialogueBoxText = "...";
 
         initialStoryNode.background = null;
         initialStoryNode.characterLeft = activeCharacter;
@@ -61,15 +72,74 @@ public class StoryManager : MonoBehaviour
         //CharacterStruct sideCharacter = characterGenerator.Generate(CharacterEnum.Character1);
 
         StoryNode newStoryNode = new StoryNode();
-        newStoryNode.storyNodeType = StoryNodeType.Output;
-        newStoryNode.activeCharacterName = activeCharacter.name;
-        newStoryNode.dialogueBoxText = "WOW you are definately weird";
+
+        switch (storyPoint)
+        {
+            case StoryPoint.Introduction:
+                newStoryNode = IntroductionStory();
+                break;
+            case StoryPoint.Part2:
+                newStoryNode = Part2Story();
+                break;
+        }
+        
+        progress++;
+
+        mainGameManager.SubmitStoryNode(newStoryNode);
+    }
+
+    string[] introStrings = new string[] {
+        "You awaken, not knowing where you are.",
+        "Looking around you see people sitting around desks.",
+        "You realise you are in an unknown office space."
+    };
+
+    private StoryNode IntroductionStory()
+    {
+        StoryNode newStoryNode = new StoryNode();
+        newStoryNode.storyNodeType = StoryNodeType.OutputComplete;
+        newStoryNode.activeCharacterName = "???";
+        newStoryNode.dialogueBoxText = introStrings[progress];
 
         newStoryNode.background = null;
         newStoryNode.characterLeft = activeCharacter;
         newStoryNode.characterRight = sideCharacter;
 
-        mainGameManager.SubmitStoryNode(newStoryNode);
+        
+        if (progress > introStrings.Length - 2)
+        {
+            storyPoint = StoryPoint.Part2;
+            progress = 0;
+        }
+
+        return newStoryNode;
+    }
+
+    string[] part2Strings = new string[] {
+        "Can you introduce yourself?",
+        "Tell me about the office",
+        "Describe to me how you are gonna eat oranges later"
+    };
+    private StoryNode Part2Story()
+    {
+        activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
+        sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
+
+        GenerateMessage(activeCharacter.llmCharacter, part2Strings[progress]);
+
+        return GenerateReplyNode(LastLLMOutputText, StoryNodeType.OutputComplete);
+
+        //progress++;
+        //StoryNode newStoryNode = new StoryNode();
+        //newStoryNode.storyNodeType = StoryNodeType.OutputComplete;
+        //newStoryNode.activeCharacterName = activeCharacter.name;
+        //newStoryNode.dialogueBoxText = "WOW you are definately weird";
+
+        //newStoryNode.background = null;
+        //newStoryNode.characterLeft = activeCharacter;
+        //newStoryNode.characterRight = sideCharacter;
+
+        //return newStoryNode;
     }
 
     public void SubmitInputText(string inputText)
@@ -77,29 +147,13 @@ public class StoryManager : MonoBehaviour
         LastInputText = inputText;
     }
 
-    void GenerateMesage(int i)
+    void GenerateMessage(LLMCharacter llmCharacter, string message)
     {
-        string message;
-        switch (i)
-        {
-            case 1:
-                message = ("Hi, I'm Shrimp nice to meet you!");
-                break;
-            case 2:
-                message = ("What did you do today?");
-                break;
-            case 3:
-                message = ("What's your favourite thing about your job?");
-                break;
-            default:
-                message = ("Skooboodoobob, I am a shrimp, and am shrimpin around");
-                break;
-        }
-        Debug.Log("Asking to Gnorp: " + message);
+        Debug.Log("Asking to AI: " + message);
         //////////////////////////////
         /////////////////////////////////
         ///////////////////////////
-        _ = currentStoryNode.characterLeft.llmCharacter.Chat(message, HandleReply, ReplyCompleted); //TODO: FIX THIS SHIT SHO HAARD
+        _ = llmCharacter.Chat(message, HandleReply, ReplyCompleted); //TODO: FIX THIS SHIT SHO HAARD
         /////////////////////
         /////////////////////
         ///////////////////////////
@@ -111,26 +165,41 @@ public class StoryManager : MonoBehaviour
     void HandleReply(string reply)
     {
         Debug.Log(reply);
+        LastLLMOutputText = reply;
 
-        CharacterStruct activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
-        CharacterStruct sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
-
-        StoryNode newStoryNode = new StoryNode();
-        newStoryNode.storyNodeType = StoryNodeType.Output;
-        newStoryNode.activeCharacterName = activeCharacter.name;
-        newStoryNode.dialogueBoxText = "Penguins can have sex with some species of seal, but their cochlea is ruined afterwards.";
-
-        newStoryNode.background = null;
-        newStoryNode.background = null;
-        newStoryNode.characterLeft = activeCharacter;
-        newStoryNode.characterRight = sideCharacter;
-
+        StoryNode newStoryNode = GenerateReplyNode(reply, StoryNodeType.OutputIncomplete);
+        Debug.Log(newStoryNode.dialogueBoxText);
         mainGameManager.SubmitStoryNode(newStoryNode);
     }
 
     void ReplyCompleted()
     {
-        // do something when the reply from the model is complete
-        Debug.Log("The AI replied");
+        StoryNode newStoryNode = GenerateReplyNode(LastLLMOutputText, StoryNodeType.OutputComplete);
+        mainGameManager.SubmitStoryNode(newStoryNode);
+    }
+
+    StoryNode GenerateReplyNode(string reply, StoryNodeType storyNodeType)
+    {
+        CharacterStruct activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
+        CharacterStruct sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
+
+        StoryNode newStoryNode = new StoryNode();
+        newStoryNode.storyNodeType = StoryNodeType.OutputIncomplete;
+        newStoryNode.activeCharacterName = activeCharacter.name;
+        newStoryNode.dialogueBoxText = reply;
+
+        newStoryNode.background = null;
+        newStoryNode.characterLeft = activeCharacter;
+        newStoryNode.characterRight = sideCharacter;
+
+        return newStoryNode;
+    }
+
+    // Utility functions
+    public void swapActiveCharacter()
+    {
+        CharacterStruct temp = activeCharacter;
+        activeCharacter = sideCharacter;
+        sideCharacter = temp;
     }
 }

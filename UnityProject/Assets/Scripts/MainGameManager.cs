@@ -53,7 +53,10 @@ public class MainGameManager : MonoBehaviour
     {
         switch(storyNode.storyNodeType)
         {
-            case StoryNodeType.Output:
+            case StoryNodeType.OutputComplete:
+                UnpackOutputStoryNode(storyNode);
+                break;
+            case StoryNodeType.OutputIncomplete:
                 UnpackOutputStoryNode(storyNode);
                 break;
             case StoryNodeType.TextInput:
