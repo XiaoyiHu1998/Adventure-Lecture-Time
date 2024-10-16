@@ -1076,15 +1076,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6db5c3a960c5704c86582eef5277848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterNames:
-  - '"Boy"'
-  - '"GnoblinGianto"'
-  characterSprites:
-  - {fileID: 21300000, guid: f43ad94788ee7a149a47459e0ada9cb2, type: 3}
-  - {fileID: 21300000, guid: 94a089f526e7c4d449d52a85fb76e1c1, type: 3}
-  characterLlmCharacters:
-  - {fileID: 1157607302}
-  - {fileID: 301555752}
+  characterStructs:
+  - name: '"Boy"'
+    sprite: {fileID: 21300000, guid: f43ad94788ee7a149a47459e0ada9cb2, type: 3}
+    llmCharacter: {fileID: 1157607302}
+  - name: Gnoblin
+    sprite: {fileID: 21300000, guid: 94a089f526e7c4d449d52a85fb76e1c1, type: 3}
+    llmCharacter: {fileID: 301555752}
 --- !u!114 &724394382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1099,7 +1097,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BackgroundSprite: {fileID: 21300000, guid: ae706e1cd09a51e4abd2cbd62ffb2d30, type: 3}
   mainGameManager: {fileID: 168302086}
-  characterGenerator: {fileID: 724394380}
+  characterDatabase: {fileID: 724394380}
 --- !u!4 &724394383
 Transform:
   m_ObjectHideFlags: 0

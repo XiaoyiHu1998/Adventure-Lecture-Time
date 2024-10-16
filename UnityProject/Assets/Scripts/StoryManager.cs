@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LLMUnity;
+using System;
 
 public enum StoryNodeType
 {
@@ -9,30 +10,6 @@ public enum StoryNodeType
     TextInput,
     DrawInput
 };
-
-public enum CharacterEnum
-{
-    Character0 = 0,
-    Character1 = 1,
-    Character2 = 2,
-    Character3 = 3,
-    Character4 = 4
-}
-
-
-public struct CharacterStruct
-{
-    public string name;
-    public Sprite sprite;
-    public LLMCharacter llmCharacter;
-
-    public CharacterStruct(string name, Sprite sprite, LLMCharacter llmCharacter)
-    {
-        this.name = name;
-        this.sprite = sprite;
-        this.llmCharacter = llmCharacter;
-    }
-}
 
 public struct StoryNode
 {
@@ -51,7 +28,7 @@ public class StoryManager : MonoBehaviour
     public Sprite BackgroundSprite;
 
     public MainGameManager mainGameManager;
-    public CharacterGenerator characterGenerator;
+    public CharacterDatabase characterDatabase;
 
     private StoryNode initialStoryNode;
     private StoryNode currentStoryNode;
@@ -62,8 +39,8 @@ public class StoryManager : MonoBehaviour
 
     public void Start()
     {
-        activeCharacter = characterGenerator.Generate(CharacterEnum.Character0);
-        sideCharacter = characterGenerator.Generate(CharacterEnum.Character1);
+        activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
+        sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
 
         initialStoryNode = new StoryNode();
         initialStoryNode.storyNodeType = StoryNodeType.Output;
@@ -135,8 +112,8 @@ public class StoryManager : MonoBehaviour
     {
         Debug.Log(reply);
 
-        CharacterStruct activeCharacter = characterGenerator.Generate(CharacterEnum.Character0);
-        CharacterStruct sideCharacter = characterGenerator.Generate(CharacterEnum.Character1);
+        CharacterStruct activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
+        CharacterStruct sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
 
         StoryNode newStoryNode = new StoryNode();
         newStoryNode.storyNodeType = StoryNodeType.Output;
