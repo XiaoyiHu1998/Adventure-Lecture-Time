@@ -115,7 +115,6 @@ namespace FreeDraw
                 });
                 strokes[^1][0].Add((int)pixel_pos.x);
                 strokes[^1][1].Add((int)(drawable_texture.height - pixel_pos.y));
-                Debug.Log("Strokes: " + strokes.Count);
             }
             else if (previous_drag_position != pixel_pos)
             {
@@ -184,7 +183,6 @@ namespace FreeDraw
                     max_y = Mathf.Max(max_y, point);
                 }
             }
-            Debug.Log("Min x: " + min_x + ", Max x: " + max_x + ", Min y: " + min_y + ", Max y: " + max_y);
         
             List<List<List<int>>> scaled_strokes = new List<List<List<int>>>();
             // Align and scale the strokes
@@ -283,30 +281,30 @@ namespace FreeDraw
                 scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
             }
             json = JsonConvert.SerializeObject(new { drawing = scaled_strokes });
-            Debug.Log(json);
             StartCoroutine(SendJsonRequest("http://127.0.0.1:5000/predict", json));
 
         }
 
         private IEnumerator SendJsonRequest(string url, string json)
         {
-            UnityWebRequest request = new UnityWebRequest(url, "POST");
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
             {
-                Debug.LogError(request.error);
-            }
-            else
-            {
-                string response = request.downloadHandler.text;
-                //Debug.Log("Response: " + response);
-                drawingManager.SetRecognizedObjectString(response);
+                byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+                request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                request.downloadHandler = new DownloadHandlerBuffer();
+                request.SetRequestHeader("Content-Type", "application/json");
+        
+                yield return request.SendWebRequest();
+                if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    Debug.LogError(request.error);
+                }
+                else if (request.result == UnityWebRequest.Result.Success)
+                {
+                    string response = request.downloadHandler.text;
+                    Debug.Log("Response: " + response);
+                    //drawingManager.SetRecognizedObjectString(response);               
+                }
             }
         }
 
