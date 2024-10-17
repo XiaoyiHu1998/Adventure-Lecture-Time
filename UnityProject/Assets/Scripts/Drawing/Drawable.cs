@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using Debug = UnityEngine.Debug;
+using System.Linq;
 
 namespace FreeDraw
 {
@@ -47,6 +50,7 @@ namespace FreeDraw
         Color[] clean_colours_array;
         Color transparent;
         Color32[] cur_colors;
+        List<Color32[]> prev_colors = new List<Color32[]>();
         bool mouse_was_previously_held_down = false;
         bool no_drawing_on_current_drag = false;
         List<List<List<int>>> strokes = new List<List<List<int>>>();
@@ -104,7 +108,7 @@ namespace FreeDraw
         }
 
 
-        public void AddStroke(Vector2 pixel_pos)
+        private void AddStroke(Vector2 pixel_pos)
         {            
             if (previous_drag_position == Vector2.zero)
             {
@@ -162,7 +166,7 @@ namespace FreeDraw
         //////////////////////////////////////////////////////////////////////////////
 
 
-        public List<List<List<int>>> ScaleStrokes(List<List<List<int>>> strokes) 
+        private List<List<List<int>>> ScaleStrokes(List<List<List<int>>> strokes) 
         {   
             // Get the maximum and minimum x and y values
             int min_x = int.MaxValue;
@@ -237,6 +241,10 @@ namespace FreeDraw
                 {
                     // We're over the texture we're drawing on!
                     // Use whatever function the current brush is
+                    if (previous_drag_position == Vector2.zero)
+                    {
+                        prev_colors.Add(drawable_texture.GetPixels32());
+                    }
                     Vector2 pixel_pos = WorldToPixelCoordinates(mouse_world_position);
                     current_brush(pixel_pos);
                     AddStroke(pixel_pos);
@@ -274,6 +282,10 @@ namespace FreeDraw
 
         public void PredictStrokes(List<List<List<int>>> strokes) 
         {
+            if (strokes.Count == 0)
+            {
+                return;
+            }
             List<List<List<int>>> scaled_strokes = ScaleStrokes(strokes);
             string json = JsonConvert.SerializeObject(scaled_strokes);
             for (int i = 0; i < scaled_strokes.Count; i++)
@@ -287,28 +299,26 @@ namespace FreeDraw
 
         private IEnumerator SendJsonRequest(string url, string json)
         {
-            using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+            using UnityWebRequest request = new UnityWebRequest(url, "POST");
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
-                byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-                request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-                request.downloadHandler = new DownloadHandlerBuffer();
-                request.SetRequestHeader("Content-Type", "application/json");
-        
-                yield return request.SendWebRequest();
-                if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-                {
-                    Debug.LogError(request.error);
-                }
-                else if (request.result == UnityWebRequest.Result.Success)
-                {
-                    string response = request.downloadHandler.text;
-                    Debug.Log("Response: " + response);
-                    //drawingManager.SetRecognizedObjectString(response);               
-                }
+                Debug.LogError(request.error);
+            }
+            else if (request.result == UnityWebRequest.Result.Success)
+            {
+                string response = request.downloadHandler.text;
+                Debug.Log("Response: " + response);
+                //drawingManager.SetRecognizedObjectString(response);               
             }
         }
 
-        public List<List<int>> RamerDouglasPeucker(List<List<int>> stroke, float epsilon = 2.0f)
+        private List<List<int>> RamerDouglasPeucker(List<List<int>> stroke, float epsilon = 2.0f)
         {
             // Find the point with the maximum distance
             float dmax = 0;
@@ -352,7 +362,7 @@ namespace FreeDraw
             return resultStroke;
         }
 
-        public float PerpendicularDistance(int x, int y, int x1, int y1, int x2, int y2)
+        private float PerpendicularDistance(int x, int y, int x1, int y1, int x2, int y2)
         {
             float A = x - x1;
             float B = y - y1;
@@ -456,6 +466,16 @@ namespace FreeDraw
         {
             drawable_texture.SetPixels32(cur_colors);
             drawable_texture.Apply();
+        }
+
+        public void UndoStroke() {
+            if (strokes.Count > 0 && prev_colors.Count > 0)
+            {
+                cur_colors = prev_colors[^1];
+                ApplyMarkedPixelChanges();
+                prev_colors.RemoveAt(prev_colors.Count - 1);
+                strokes.RemoveAt(strokes.Count - 1);
+            }
         }
 
 
