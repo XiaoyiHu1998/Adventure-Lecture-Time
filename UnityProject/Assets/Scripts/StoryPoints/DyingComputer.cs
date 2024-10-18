@@ -16,7 +16,7 @@ public partial class StoryManager
 
         GenerateMessage(activeCharacter.llmCharacter, part2Strings[progress]);
 
-        return GenerateReplyNode(LastLLMOutputText, StoryNodeType.OutputComplete);
+        return GenerateGenericNode(LastLLMOutputText, StoryNodeType.OutputComplete);
 
         //progress++;
         //StoryNode newStoryNode = new StoryNode();

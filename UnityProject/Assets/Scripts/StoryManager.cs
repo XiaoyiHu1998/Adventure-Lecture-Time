@@ -113,28 +113,40 @@ public partial class StoryManager : MonoBehaviour
         Debug.Log(reply);
         LastLLMOutputText = reply;
 
-        StoryNode newStoryNode = GenerateReplyNode(reply, StoryNodeType.OutputIncomplete);
+        StoryNode newStoryNode = GenerateGenericNode(reply, StoryNodeType.OutputIncomplete);
         Debug.Log(newStoryNode.dialogueBoxText);
         mainGameManager.SubmitStoryNode(newStoryNode);
     }
 
     void ReplyCompleted()
     {
-        StoryNode newStoryNode = GenerateReplyNode(LastLLMOutputText, StoryNodeType.OutputComplete);
+        StoryNode newStoryNode = GenerateGenericNode(LastLLMOutputText, StoryNodeType.OutputComplete);
         mainGameManager.SubmitStoryNode(newStoryNode);
     }
 
-    StoryNode GenerateReplyNode(string reply, StoryNodeType storyNodeType)
+    // General Story nodes
+    //StoryNode GenerateReplyNode(string reply, StoryNodeType storyNodeType)
+    //{
+    //    StoryNode newStoryNode = new StoryNode();
+    //    newStoryNode.storyNodeType = StoryNodeType.OutputIncomplete;
+    //    newStoryNode.activeCharacterName = activeCharacter.name;
+    //    newStoryNode.dialogueBoxText = reply;
+
+    //    newStoryNode.background = null;
+    //    newStoryNode.characterLeft = activeCharacter;
+    //    newStoryNode.characterRight = sideCharacter;
+
+    //    return newStoryNode;
+    //}
+
+    StoryNode GenerateGenericNode(string text, StoryNodeType storyNodeType, Sprite background = null)
     {
-        CharacterStruct activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
-        CharacterStruct sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
-
         StoryNode newStoryNode = new StoryNode();
-        newStoryNode.storyNodeType = StoryNodeType.OutputIncomplete;
+        newStoryNode.storyNodeType = storyNodeType;
         newStoryNode.activeCharacterName = activeCharacter.name;
-        newStoryNode.dialogueBoxText = reply;
+        newStoryNode.dialogueBoxText = text;
 
-        newStoryNode.background = null;
+        newStoryNode.background = background;
         newStoryNode.characterLeft = activeCharacter;
         newStoryNode.characterRight = sideCharacter;
 
@@ -142,7 +154,7 @@ public partial class StoryManager : MonoBehaviour
     }
 
     // Utility functions
-    public void swapActiveCharacter()
+    public void SwapActiveCharacter()
     {
         CharacterStruct temp = activeCharacter;
         activeCharacter = sideCharacter;
