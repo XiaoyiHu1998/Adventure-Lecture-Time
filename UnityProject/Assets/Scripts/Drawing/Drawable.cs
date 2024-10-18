@@ -230,13 +230,15 @@ namespace FreeDraw
         {
             // Is the user holding down the left mouse button?
             bool mouse_held_down = Input.GetMouseButton(0);
+            
+            // Convert mouse coordinates to world coordinates
+            Vector2 mouse_world_position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            // Check if the current mouse position overlaps our image
+            Collider2D hit = Physics2D.OverlapPoint(mouse_world_position, Drawing_Layers.value);
+            
             if (mouse_held_down && !no_drawing_on_current_drag)
             {
-                // Convert mouse coordinates to world coordinates
-                Vector2 mouse_world_position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-                // Check if the current mouse position overlaps our image
-                Collider2D hit = Physics2D.OverlapPoint(mouse_world_position, Drawing_Layers.value);
                 if (hit != null && hit.transform != null)
                 {
                     // We're over the texture we're drawing on!
@@ -253,6 +255,12 @@ namespace FreeDraw
 
                 else
                 {
+                    if (previous_drag_position != Vector2.zero)
+                    {
+                        // We were drawing, but now we're not over the canvas
+                        // This means we've stopped drawing
+                        PredictStrokes(strokes);
+                    }
                     // We're not over our destination texture
                     previous_drag_position = Vector2.zero;
                     if (!mouse_was_previously_held_down)
@@ -260,7 +268,7 @@ namespace FreeDraw
                         // This is a new drag where the user is left clicking off the canvas
                         // Ensure no drawing happens until a new drag is started
                         no_drawing_on_current_drag = true;
-                    }
+                    } 
                 }
             }
             // Mouse is released
@@ -268,13 +276,11 @@ namespace FreeDraw
             {
                 previous_drag_position = Vector2.zero;
                 no_drawing_on_current_drag = false;
-                if (mouse_was_previously_held_down)
+                if (mouse_was_previously_held_down && hit != null && hit.transform != null)
                 {
                     // This means the user has released the mouse button
                     // We can consider this the end of a drawing stroke
                     PredictStrokes(strokes);
-
-
                 }
             }
             mouse_was_previously_held_down = mouse_held_down;
