@@ -29,7 +29,7 @@ public struct StoryNode
     public CharacterStruct characterRight;
 }
 
-public class StoryManager : MonoBehaviour
+public partial class StoryManager : MonoBehaviour
 {
     //public bool firstload = true;
     public Sprite BackgroundSprite;
@@ -86,60 +86,6 @@ public class StoryManager : MonoBehaviour
         progress++;
 
         mainGameManager.SubmitStoryNode(newStoryNode);
-    }
-
-    string[] introStrings = new string[] {
-        "You awaken, not knowing where you are.",
-        "Looking around you see people sitting around desks.",
-        "You realise you are in an unknown office space."
-    };
-
-    private StoryNode IntroductionStory()
-    {
-        StoryNode newStoryNode = new StoryNode();
-        newStoryNode.storyNodeType = StoryNodeType.OutputComplete;
-        newStoryNode.activeCharacterName = "???";
-        newStoryNode.dialogueBoxText = introStrings[progress];
-
-        newStoryNode.background = null;
-        newStoryNode.characterLeft = activeCharacter;
-        newStoryNode.characterRight = sideCharacter;
-
-        
-        if (progress > introStrings.Length - 2)
-        {
-            storyPoint = StoryPoint.Part2;
-            progress = 0;
-        }
-
-        return newStoryNode;
-    }
-
-    string[] part2Strings = new string[] {
-        "Can you introduce yourself?",
-        "Tell me about the office",
-        "Describe to me how you are gonna eat oranges later"
-    };
-    private StoryNode Part2Story()
-    {
-        activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
-        sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
-
-        GenerateMessage(activeCharacter.llmCharacter, part2Strings[progress]);
-
-        return GenerateReplyNode(LastLLMOutputText, StoryNodeType.OutputComplete);
-
-        //progress++;
-        //StoryNode newStoryNode = new StoryNode();
-        //newStoryNode.storyNodeType = StoryNodeType.OutputComplete;
-        //newStoryNode.activeCharacterName = activeCharacter.name;
-        //newStoryNode.dialogueBoxText = "WOW you are definately weird";
-
-        //newStoryNode.background = null;
-        //newStoryNode.characterLeft = activeCharacter;
-        //newStoryNode.characterRight = sideCharacter;
-
-        //return newStoryNode;
     }
 
     public void SubmitInputText(string inputText)
