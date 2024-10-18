@@ -54,6 +54,8 @@ namespace FreeDraw
         bool mouse_was_previously_held_down = false;
         bool no_drawing_on_current_drag = false;
         List<List<List<int>>> strokes = new List<List<List<int>>>();
+        List<string> predictions = new List<string>();
+        int strokes_undone = 0; // strokes that have been undone but have not yet been predicted
 
 
 
@@ -319,7 +321,14 @@ namespace FreeDraw
             else if (request.result == UnityWebRequest.Result.Success)
             {
                 string response = request.downloadHandler.text;
-                Debug.Log("Response: " + response);
+                if(strokes_undone > 0)
+                {
+                    strokes_undone--;
+                }
+                else
+                {
+                    predictions.Add(response);
+                }
                 //drawingManager.SetRecognizedObjectString(response);               
             }
         }
@@ -481,6 +490,16 @@ namespace FreeDraw
                 ApplyMarkedPixelChanges();
                 prev_colors.RemoveAt(prev_colors.Count - 1);
                 strokes.RemoveAt(strokes.Count - 1);
+                // If we have predictions that haven't been undone yet, remove the last one
+                // Otherwise, increment strokes_undone to remove it later
+                if (strokes.Count >= predictions.Count)
+                {
+                    // Prediction has not finished yet, so we need to remove it later
+                    strokes_undone++;
+                }
+                else {
+                    predictions.RemoveAt(predictions.Count - 1);
+                }
             }
         }
 
