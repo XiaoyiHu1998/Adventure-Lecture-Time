@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Debug = UnityEngine.Debug;
 using System.Linq;
 
@@ -321,6 +322,9 @@ namespace FreeDraw
             else if (request.result == UnityWebRequest.Result.Success)
             {
                 string response = request.downloadHandler.text;
+                JObject jsonResponse = JObject.Parse(response);
+                string classValue = jsonResponse["class"]?.ToString();
+                Debug.Log(classValue);
                 if(strokes_undone > 0)
                 {
                     strokes_undone--;
