@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Debug = UnityEngine.Debug;
 using System.Linq;
+using UnityEngine.UI;
+using TMPro;
 
 namespace FreeDraw
 {
@@ -57,6 +59,9 @@ namespace FreeDraw
         List<List<List<int>>> strokes = new List<List<List<int>>>();
         List<string> predictions = new List<string>();
         int strokes_undone = 0; // strokes that have been undone but have not yet been predicted
+        Button submitButton;
+        TMP_Text predictionText;
+
 
 
 
@@ -115,6 +120,8 @@ namespace FreeDraw
         {            
             if (previous_drag_position == Vector2.zero)
             {
+                submitButton.interactable = false;
+                predictionText.text = "..............";
                 // Start a new stroke if we're not dragging already
                 strokes.Add(new List<List<int>>() {
                     new List<int>(),
@@ -225,7 +232,13 @@ namespace FreeDraw
         }
 
 
-
+        public void SubmitDrawing()
+        {
+            if (strokes.Count == predictions.Count)
+            {
+                drawingManager.SetRecognizedObjectString(predictions[^1]);               
+            }
+        }
 
         // This is where the magic happens.
         // Detects when user is left clicking, which then call the appropriate function
@@ -324,16 +337,19 @@ namespace FreeDraw
                 string response = request.downloadHandler.text;
                 JObject jsonResponse = JObject.Parse(response);
                 string classValue = jsonResponse["class"]?.ToString();
-                Debug.Log(classValue);
                 if(strokes_undone > 0)
                 {
                     strokes_undone--;
                 }
                 else
                 {
-                    predictions.Add(response);
+                    predictions.Add(classValue);
                 }
-                //drawingManager.SetRecognizedObjectString(response);               
+                if (predictions.Count == strokes.Count && strokes.Count > 0)
+                {
+                    submitButton.interactable = true;
+                    predictionText.text = classValue;
+                }
             }
         }
 
@@ -504,6 +520,16 @@ namespace FreeDraw
                 else {
                     predictions.RemoveAt(predictions.Count - 1);
                 }
+                if (strokes.Count == predictions.Count && strokes.Count > 0)
+                {
+                    submitButton.interactable = true;
+                    predictionText.text = predictions[^1];
+                }
+                else if (strokes.Count == 0)
+                {
+                    submitButton.interactable = false;
+                    predictionText.text = "..............";
+                }
             }
         }
 
@@ -579,6 +605,10 @@ namespace FreeDraw
             drawable = this;
             // DEFAULT BRUSH SET HERE
             current_brush = PenBrush;
+
+            submitButton = GameObject.Find("CheckMarkButton").GetComponent<Button>();
+            predictionText = GameObject.Find("PredictText").GetComponent<TMP_Text>();
+
 
             drawable_sprite = this.GetComponent<SpriteRenderer>().sprite;
             drawable_texture = drawable_sprite.texture;

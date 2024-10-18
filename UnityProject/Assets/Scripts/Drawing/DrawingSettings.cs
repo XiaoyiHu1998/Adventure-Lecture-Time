@@ -71,5 +71,10 @@ namespace FreeDraw
         {
             Drawable.drawable.UndoStroke();
         }
+
+        public void SubmitDrawing()
+        {
+            Drawable.drawable.SubmitDrawing();
+        }
     }
 }
