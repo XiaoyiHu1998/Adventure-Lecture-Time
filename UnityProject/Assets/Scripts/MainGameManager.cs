@@ -56,20 +56,22 @@ public class MainGameManager : MonoBehaviour
         switch(storyNode.storyNodeType)
         {
             case StoryNodeType.OutputComplete:
-                mainCanvas.SetActive(true);
+                mainCanvasGroup.interactable = true;
+                mainCanvasGroup.blocksRaycasts = true;
                 UnpackOutputStoryNode(storyNode);
                 break;
             case StoryNodeType.OutputIncomplete:
-                mainCanvas.SetActive(true);
+                mainCanvasGroup.interactable = true;
+                mainCanvasGroup.blocksRaycasts = true;
                 UnpackOutputStoryNode(storyNode);
                 break;
             case StoryNodeType.TextInput:
-                mainCanvas.SetActive(true);
+                mainCanvasGroup.interactable = true;
+                mainCanvasGroup.blocksRaycasts = true;
                 textInputManager.EnableTextInput();
                 break;
             case StoryNodeType.DrawInput:
                 drawingManager.EnableDrawing();
-                mainCanvas.SetActive(true);
                 mainCanvasGroup.interactable = false;
                 mainCanvasGroup.blocksRaycasts = false;
                 break;
