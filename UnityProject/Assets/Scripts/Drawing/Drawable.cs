@@ -45,6 +45,9 @@ namespace FreeDraw
 
         // Used to reference THIS specific file without making all methods static
         public static Drawable drawable;
+        public Button submitButton;
+        public TMP_Text predictionText;
+        
         // MUST HAVE READ/WRITE enabled set in the file editor of Unity
         Sprite drawable_sprite;
         Texture2D drawable_texture;
@@ -59,8 +62,6 @@ namespace FreeDraw
         List<List<List<int>>> strokes = new List<List<List<int>>>();
         List<string> predictions = new List<string>();
         int strokes_undone = 0; // strokes that have been undone but have not yet been predicted
-        Button submitButton;
-        TMP_Text predictionText;
 
 
 
@@ -605,10 +606,6 @@ namespace FreeDraw
             drawable = this;
             // DEFAULT BRUSH SET HERE
             current_brush = PenBrush;
-
-            submitButton = GameObject.Find("CheckMarkButton").GetComponent<Button>();
-            predictionText = GameObject.Find("PredictText").GetComponent<TMP_Text>();
-
 
             drawable_sprite = this.GetComponent<SpriteRenderer>().sprite;
             drawable_texture = drawable_sprite.texture;

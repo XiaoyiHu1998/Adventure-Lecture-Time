@@ -29,6 +29,7 @@ public class MainGameManager : MonoBehaviour
     public TextInputManager textInputManager;
     public DrawingManager drawingManager;
     public GameObject mainCanvas;
+    public CanvasGroup mainCanvasGroup;
 
     public UnityEngine.UI.Image mainPanelImage;
     public UnityEngine.UI.Image characterPanelLeftImage;
@@ -67,8 +68,10 @@ public class MainGameManager : MonoBehaviour
                 textInputManager.EnableTextInput();
                 break;
             case StoryNodeType.DrawInput:
-                mainCanvas.SetActive(false);
                 drawingManager.EnableDrawing();
+                mainCanvas.SetActive(true);
+                mainCanvasGroup.interactable = false;
+                mainCanvasGroup.blocksRaycasts = false;
                 break;
         }
     }

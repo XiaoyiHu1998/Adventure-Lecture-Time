@@ -5,6 +5,7 @@ using UnityEngine;
 public class DrawingManager : MonoBehaviour
 {
     public MainGameManager mainGameManager;
+    public GameObject drawingCanvas;
     private string m_ObjectString;
 
     private void Start()
@@ -15,11 +16,13 @@ public class DrawingManager : MonoBehaviour
     public void EnableDrawing()
     {
         gameObject.SetActive(true);
+        drawingCanvas.SetActive(true);
     }
 
     public void DisableDrawing()
     {
         gameObject.SetActive(false);
+        drawingCanvas.SetActive(false);
     }
 
     public void SetRecognizedObjectString(string objectString)

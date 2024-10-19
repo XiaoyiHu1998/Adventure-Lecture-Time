@@ -157,6 +157,7 @@ MonoBehaviour:
   textInputManager: {fileID: 859571508}
   drawingManager: {fileID: 7721495651603250232}
   mainCanvas: {fileID: 494431979}
+  mainCanvasGroup: {fileID: 1334157121}
   mainPanelImage: {fileID: 1776456260}
   characterPanelLeftImage: {fileID: 1873411656}
   characterPanelRightImage: {fileID: 1558280608}
@@ -965,7 +966,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &640712266
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2970,10 +2971,10 @@ RectTransform:
   m_Father: {fileID: 4193904798146107685}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -25}
-  m_SizeDelta: {x: 800, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4193904798330026955
 MonoBehaviour:
@@ -3136,10 +3137,10 @@ RectTransform:
   m_Father: {fileID: 4193904799379181227}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.84615, y: -25}
-  m_SizeDelta: {x: 92.30769, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4193904799142827211
 MonoBehaviour:
@@ -3405,10 +3406,10 @@ RectTransform:
   m_Father: {fileID: 4193904799379181227}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 28.846153, y: -25}
-  m_SizeDelta: {x: 57.692307, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4193904799590591971
 MonoBehaviour:
@@ -3585,6 +3586,8 @@ MonoBehaviour:
   Reset_Colour: {r: 1, g: 1, b: 1, a: 1}
   Reset_To_This_Texture_On_Play: 0
   reset_texture: {fileID: 2800000, guid: 403adc4c0a04e494ca2033818ca3c822, type: 3}
+  submitButton: {fileID: 4193904799590591969}
+  predictionText: {fileID: 4193904798330026955}
 --- !u!212 &4193904799700183101
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3791,7 +3794,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &7721495651603250232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3805,3 +3808,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainGameManager: {fileID: 168302086}
+  drawingCanvas: {fileID: 640712265}
