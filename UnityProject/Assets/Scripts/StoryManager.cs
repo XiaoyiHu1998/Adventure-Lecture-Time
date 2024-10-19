@@ -93,12 +93,14 @@ public partial class StoryManager : MonoBehaviour
         LastInputText = inputText;
     }
 
-    void GenerateMessage(LLMCharacter llmCharacter, string message)
+    // should this be async?
+    async void GenerateMessage(LLMCharacter llmCharacter, string message)
     {
         Debug.Log("Asking to AI: " + message);
         //////////////////////////////
         /////////////////////////////////
         ///////////////////////////
+        
         _ = llmCharacter.Chat(message, HandleReply, ReplyCompleted); //TODO: FIX THIS SHIT SHO HAARD
         /////////////////////
         /////////////////////
