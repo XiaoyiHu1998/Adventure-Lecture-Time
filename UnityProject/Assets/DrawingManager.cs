@@ -4,33 +4,34 @@ using UnityEngine;
 
 public class DrawingManager : MonoBehaviour
 {
-    public GameObject DrawingWriteEnabledImageToDrawOn;
-    private bool drawingEnabled = false;
-    public string m_ObjectString { get; private set; }
+    public MainGameManager mainGameManager;
+    private string m_ObjectString;
 
     private void Start()
     {
-        drawingEnabled = false;
-        SetActiveDrawingWriteEnabledImageToDrawOn(drawingEnabled);
-    }
-
-    private void SetActiveDrawingWriteEnabledImageToDrawOn(bool enabled)
-    {
-        DrawingWriteEnabledImageToDrawOn.SetActive(enabled);
-    }
-
-    public void SetDrawingActive()
-    {
-        DrawingWriteEnabledImageToDrawOn.SetActive(true);
+        DisableDrawing();
     }
 
     public void EnableDrawing()
     {
-        DrawingWriteEnabledImageToDrawOn.SetActive(false);
+        gameObject.SetActive(true);
+    }
+
+    public void DisableDrawing()
+    {
+        gameObject.SetActive(false);
     }
 
     public void SetRecognizedObjectString(string objectString)
     {
         m_ObjectString = objectString;
+        mainGameManager.SubmitDrawingRecognizedObject(m_ObjectString);
+        DisableDrawing();
+        mainGameManager.ContinueStory();
+    }
+
+    public string GetRecognizedObjectString()
+    {
+        return m_ObjectString;
     }
 }

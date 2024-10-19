@@ -28,6 +28,7 @@ public class MainGameManager : MonoBehaviour
     public StoryManager storyManager;
     public TextInputManager textInputManager;
     public DrawingManager drawingManager;
+    public GameObject mainCanvas;
 
     public UnityEngine.UI.Image mainPanelImage;
     public UnityEngine.UI.Image characterPanelLeftImage;
@@ -54,15 +55,19 @@ public class MainGameManager : MonoBehaviour
         switch(storyNode.storyNodeType)
         {
             case StoryNodeType.OutputComplete:
+                mainCanvas.SetActive(true);
                 UnpackOutputStoryNode(storyNode);
                 break;
             case StoryNodeType.OutputIncomplete:
+                mainCanvas.SetActive(true);
                 UnpackOutputStoryNode(storyNode);
                 break;
             case StoryNodeType.TextInput:
+                mainCanvas.SetActive(true);
                 textInputManager.EnableTextInput();
                 break;
             case StoryNodeType.DrawInput:
+                mainCanvas.SetActive(false);
                 drawingManager.EnableDrawing();
                 break;
         }
@@ -110,5 +115,10 @@ public class MainGameManager : MonoBehaviour
                 GameObject.Find("NameTextBox").GetComponent<TMP_Text>().text = newText;
                 break;
         }
+    }
+
+    internal void SubmitDrawingRecognizedObject(string recognizedObject)
+    {
+        storyManager.SetRecognizedDrawingObjectString(recognizedObject);
     }
 }

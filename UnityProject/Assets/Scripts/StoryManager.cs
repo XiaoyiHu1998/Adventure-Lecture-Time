@@ -40,6 +40,7 @@ public partial class StoryManager : MonoBehaviour
     private StoryNode initialStoryNode;
     private StoryNode currentStoryNode;
     private string LastInputText;
+    private string LastRecognizedObjectString;
     private string LastLLMOutputText;
 
     private CharacterStruct activeCharacter;
@@ -159,5 +160,10 @@ public partial class StoryManager : MonoBehaviour
         CharacterStruct temp = activeCharacter;
         activeCharacter = sideCharacter;
         sideCharacter = temp;
+    }
+
+    public void SetRecognizedDrawingObjectString(string recognizedObject)
+    {
+        LastRecognizedObjectString = recognizedObject;
     }
 }
