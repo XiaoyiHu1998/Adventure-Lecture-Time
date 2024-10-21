@@ -13,7 +13,7 @@ public class ControlNet : MonoBehaviour
     
     public void Start()
     {
-        DrawControlNet("cat");
+        DrawControlNet("hospital");
     }
 
     public void DrawControlNet(string className)
@@ -23,15 +23,49 @@ public class ControlNet : MonoBehaviour
 
     private IEnumerator GetControlNet(string className)
     {
-        Debug.Log("Getting control net for " + className);
-        Debug.Log("Input texture size: " + inputTexture.width + "x" + inputTexture.height);
         string url = "http://localhost:7860/sdapi/v1/txt2img";
+        byte[] inputBytes = inputTexture.EncodeToPNG();
+        string inputBase64 = System.Convert.ToBase64String(inputBytes);
         Dictionary<string, object> json = new Dictionary<string, object>()
         {
             { "prompt", "a " + className + " in anime style" },
+            { "negative_prompt", ""},
             { "steps", 20 },
+            { "batch_size", 1 },
+            { "cfg_scale", 7},
             { "width", inputTexture.width },
-            { "height", inputTexture.height }
+            { "height", inputTexture.height },
+            { "override_settings", new Dictionary<string, object>()
+                {
+                    { "sd_model_checkpoint", "v1-5-pruned-emaonly" }
+                }
+            },
+            { "sampler_name", "Euler" },
+            { "alwayson_scripts", new Dictionary<string, object>()
+                {
+                    { "controlnet", new Dictionary<string, object>()
+                        {
+                            { "args", new List<object>()
+                                {
+                                    new Dictionary<string, object>()
+                                    {
+                                        { "enabled", true },
+                                        { "module", "invert (from white bg & black line)" },
+                                        { "model",  "control_lora_rank128_v11p_sd15_scribble_fp16" },
+                                        { "image", inputBase64 },
+                                        { "resize_mode", "Crop and Resize" },
+                                        { "low_vram", false },
+                                        { "guidance_start", 0.0f },
+                                        { "guidance_end", 1.0f },
+                                        { "control_mode", "ControlNet is more important" },
+                                        { "pixel_perfect", true }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }; 
         string jsonStr = JsonConvert.SerializeObject(json);
         byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jsonStr);
@@ -40,9 +74,7 @@ public class ControlNet : MonoBehaviour
             request.uploadHandler = new UploadHandlerRaw(bytes);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-            Debug.Log("Sending request to " + url);
             yield return request.SendWebRequest();
-            Debug.Log("Request sent");
             if (request.isNetworkError || request.isHttpError)
             {
                 Debug.LogError(request.error);
@@ -51,7 +83,6 @@ public class ControlNet : MonoBehaviour
             {
                 string response = request.downloadHandler.text;
                 JObject jsonResponse = JObject.Parse(response);
-                Debug.Log(jsonResponse);
                 var image = jsonResponse["images"][0].ToString();
                 outputTexture.LoadImage(System.Convert.FromBase64String(image));
                 Sprite sprite = Sprite.Create(outputTexture, new Rect(0, 0, outputTexture.width, outputTexture.height), new Vector2(0.5f, 0.5f));
