@@ -350,6 +350,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: LLMCharacter4
       objectReference: {fileID: 0}
+    - target: {fileID: 2675029205296193819, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: prompt
+      value: The Narrator is a non physical being that explains what's happening
+        in the story. The narrator always describes the story from a third person
+        perspective. In this story John will find himself in precarious situations
+        that he needs to solve. The Narrator is given an object name and will describe
+        in excruciating detail how John fixes the situation using this object. Any
+        leaps of logic are allowed as longs as it ends with John resolving the situation.
+      objectReference: {fileID: 0}
     - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
       propertyPath: m_RootOrder
       value: 12
@@ -396,6 +405,74 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+--- !u!1001 &267015617
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 531233437658813320, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_Name
+      value: LLMCharacter5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 469.28857
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 268.06274
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 47.527725
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+--- !u!114 &267015618 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2675029205296193819, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+  m_PrefabInstance: {fileID: 267015617}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f6c87a428fd5d0be9bbc686bdc8c3c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &285882670
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,7 +531,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Manager
+  m_text: Narrator
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1184,8 +1261,11 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: d846c08a04cb4374791500b31aa2e8f9, type: 3}
     llmCharacter: {fileID: 1203197044}
   - name: Narrator
-    sprite: {fileID: 21300000, guid: 8fb5b2b471b16e047980f2cc5531e7af, type: 3}
+    sprite: {fileID: 21300000, guid: ceaa26d7f0d0c7f4e93f6716e82b047c, type: 3}
     llmCharacter: {fileID: 1100318877}
+  - name: Computer
+    sprite: {fileID: 21300000, guid: ceaa26d7f0d0c7f4e93f6716e82b047c, type: 3}
+    llmCharacter: {fileID: 267015618}
 --- !u!114 &724394382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1811,7 +1891,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: John's heart pounded in his chest as he stared at the bathroom, now a raging
+    inferno. The flames danced menacingly, casting an eer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

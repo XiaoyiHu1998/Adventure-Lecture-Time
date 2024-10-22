@@ -15,7 +15,8 @@ public enum StoryNodeType
 public enum StoryPoint
 {
     Introduction,
-    Part2
+    Computer,
+    Coffee
 }
 
 public struct StoryNode
@@ -79,8 +80,11 @@ public partial class StoryManager : MonoBehaviour
             case StoryPoint.Introduction:
                 newStoryNode = IntroductionStory();
                 break;
-            case StoryPoint.Part2:
-                newStoryNode = Part2Story();
+            case StoryPoint.Computer:
+                newStoryNode = ComputerStory();
+                break;
+            case StoryPoint.Coffee:
+                newStoryNode = CoffeeStory();
                 break;
         }
         

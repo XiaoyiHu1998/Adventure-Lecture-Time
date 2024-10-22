@@ -106,14 +106,13 @@ public partial class StoryManager
                 newStoryNode.activeCharacterName = "Me";
                 break;
             default:
-                // Finished the story
-                text = "End scene";
+                text = "You go back to your desk";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
-                newStoryNode.activeCharacterName = "???";
-                storyPoint = StoryPoint.Part2;
+                newStoryNode.activeCharacterName = "";
+                storyPoint = StoryPoint.Computer;
                 progress = 0;
-                break;
 
+                break;
         }
 
         return newStoryNode;
