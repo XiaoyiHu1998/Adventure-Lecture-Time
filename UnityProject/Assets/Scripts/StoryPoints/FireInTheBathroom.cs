@@ -32,7 +32,7 @@ public partial class StoryManager
                 break;
             case 3:
                 // Manager tells the player to listen to the colleague
-                text = "Anyway, I believe your colleague Y.H. has a job for you, if you’d like to look into it";
+                text = "Anyway, I believe your colleague Y.H. has a job for you, if youï¿½d like to look into it";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 break;
             case 4:
@@ -89,11 +89,11 @@ public partial class StoryManager
                 // THIS SHOULD BE DRAWINPUT
                 // THIS SHOULD BE DRAWINPUT
                 // THIS SHOULD BE DRAWINPUT
-                newStoryNode = GenerateGenericNode("...", StoryNodeType.TextInput);
+                newStoryNode = GenerateGenericNode("...", StoryNodeType.DrawInput);
                 break;
             case 13:
                 // Player uses the object
-                text = "John tries to put out a bathroom that is on fire using a: " + LastInputText;
+                text = "John tries to put out a bathroom that is on fire using a: " + LastRecognizedObjectString;
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character4);
 
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
