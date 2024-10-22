@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace FreeDraw
+namespace Drawing
 {
     // Helper methods used to set drawing settings
     public class DrawingSettings : MonoBehaviour

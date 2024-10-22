@@ -11,7 +11,7 @@ using System.Linq;
 using UnityEngine.UI;
 using TMPro;
 
-namespace FreeDraw
+namespace Drawing
 {
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(Collider2D))]  // REQUIRES A COLLIDER2D to function
@@ -237,7 +237,8 @@ namespace FreeDraw
         {
             if (strokes.Count == predictions.Count)
             {
-                drawingManager.SetRecognizedObjectString(predictions[^1]);               
+                gameObject.GetComponent<ControlNet>().DrawControlNet(predictions[^1]);
+                //drawingManager.SetRecognizedObjectString(predictions[^1]);               
             }
         }
 
