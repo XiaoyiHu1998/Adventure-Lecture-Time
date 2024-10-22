@@ -301,11 +301,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50e3140c3ecaaf1c848dbf141cc2074, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  advancedOptions: 0
+  advancedOptions: 1
   remote: 0
   port: 13333
   numThreads: -1
-  numGPULayers: 0
+  numGPULayers: 32
   debug: 0
   parallelPrompts: -1
   dontDestroyOnLoad: 1
@@ -339,6 +339,63 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &244697962
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 531233437658813320, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_Name
+      value: LLMCharacter4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 469.28857
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 268.06274
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 47.527725
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
 --- !u!1 &285882670
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,7 +454,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '"Boy"'
+  m_text: Manager
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1126,6 +1183,9 @@ MonoBehaviour:
   - name: ' Ykhytlesh heartshadowsmithforgerofall (Lead developer of all in the dark)'
     sprite: {fileID: 21300000, guid: d846c08a04cb4374791500b31aa2e8f9, type: 3}
     llmCharacter: {fileID: 1203197044}
+  - name: Narrator
+    sprite: {fileID: 21300000, guid: 8fb5b2b471b16e047980f2cc5531e7af, type: 3}
+    llmCharacter: {fileID: 1351077503}
 --- !u!114 &724394382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1166,6 +1226,18 @@ PrefabInstance:
     - target: {fileID: 531233437658813320, guid: ccf0d0eee89432147a4b2fed68a5f2a7, type: 3}
       propertyPath: m_Name
       value: LLMCharacter3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675029205296193819, guid: ccf0d0eee89432147a4b2fed68a5f2a7, type: 3}
+      propertyPath: prompt
+      value: "A chat between a sleepy office worker, John,  and the  Y H, short for
+        Ykhytlesh Heartshadowsmithforgerofall (Lead developer of all in the dark).
+        She is a bossy coworker that thinks the player is not doing his work well
+        enough. Any questions the player John asks her are immediately dismissed.
+        Y H feels like John should figure it out himself.\t"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675029205296193819, guid: ccf0d0eee89432147a4b2fed68a5f2a7, type: 3}
+      propertyPath: playerName
+      value: John
       objectReference: {fileID: 0}
     - target: {fileID: 6719072085168287395, guid: ccf0d0eee89432147a4b2fed68a5f2a7, type: 3}
       propertyPath: m_RootOrder
@@ -1511,7 +1583,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c34a2a2829391a4db0b8ad6ebec5f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textInput: {fileID: 1108038525}
+  textInput: {fileID: 2086979062}
+  storyManager: {fileID: 724394382}
   textInputText: {fileID: 1441621895}
 --- !u!4 &859571509
 Transform:
@@ -2150,6 +2223,19 @@ PrefabInstance:
     - target: {fileID: 531233437658813320, guid: 56d5be744c03e9d4c90a751b1d3a1287, type: 3}
       propertyPath: m_Name
       value: LLMCharacter2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675029205296193819, guid: 56d5be744c03e9d4c90a751b1d3a1287, type: 3}
+      propertyPath: prompt
+      value: 'A chat between the manager "Manager" and a sleepy office worker, John.
+        The manager just caught the player sleeping at work, and is annoyed at the
+        player since he is slacking off at work. The manager just woke John up, and
+        is reacting to him making up an excuse, the manager doesn''t believe him.
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675029205296193819, guid: 56d5be744c03e9d4c90a751b1d3a1287, type: 3}
+      propertyPath: playerName
+      value: John
       objectReference: {fileID: 0}
     - target: {fileID: 6719072085168287395, guid: 56d5be744c03e9d4c90a751b1d3a1287, type: 3}
       propertyPath: m_RootOrder
