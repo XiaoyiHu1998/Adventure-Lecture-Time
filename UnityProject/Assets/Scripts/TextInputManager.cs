@@ -6,7 +6,7 @@ public class TextInputManager : MonoBehaviour
 {
     public GameObject textInput;
     private bool textInputEnabled;
-    StoryManager storyManager;
+    public StoryManager storyManager;
 
     public TMPro.TMP_Text textInputText;
 
@@ -17,6 +17,7 @@ public class TextInputManager : MonoBehaviour
 
     public void EnableTextInput()
     {
+        Debug.Log("enabling text input");
         textInputEnabled = true;
         textInput.SetActive(textInputEnabled);
     }
