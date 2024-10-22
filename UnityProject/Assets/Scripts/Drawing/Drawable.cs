@@ -47,6 +47,9 @@ namespace Drawing
         public static Drawable drawable;
         public Button submitButton;
         public TMP_Text predictionText;
+        public GameObject bottomRightPanel;
+        public GameObject loadingPanel;
+        public GameObject continuePanel;
         
         // MUST HAVE READ/WRITE enabled set in the file editor of Unity
         Sprite drawable_sprite;
@@ -62,6 +65,7 @@ namespace Drawing
         List<List<List<int>>> strokes = new List<List<List<int>>>();
         List<string> predictions = new List<string>();
         int strokes_undone = 0; // strokes that have been undone but have not yet been predicted
+        bool interactable = true;
 
 
 
@@ -238,14 +242,26 @@ namespace Drawing
             if (strokes.Count == predictions.Count)
             {
                 gameObject.GetComponent<ControlNet>().DrawControlNet(predictions[^1]);
-                //drawingManager.SetRecognizedObjectString(predictions[^1]);               
+                bottomRightPanel.SetActive(false);
+                interactable = false;
             }
+        }
+
+        public void Finish()
+        {
+            drawingManager.SetRecognizedObjectString(predictions[^1]);
+            continuePanel.SetActive(false);
+            interactable = true;
         }
 
         // This is where the magic happens.
         // Detects when user is left clicking, which then call the appropriate function
         void Update()
         {
+            if (!interactable)
+            {
+                return;
+            }
             // Is the user holding down the left mouse button?
             bool mouse_held_down = Input.GetMouseButton(0);
             
