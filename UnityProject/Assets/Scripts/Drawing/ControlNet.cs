@@ -30,8 +30,8 @@ namespace Drawing
                 { "steps", 20 },
                 { "batch_size", 1 },
                 { "cfg_scale", 7},
-                { "width", inputTexture.width },
-                { "height", inputTexture.height },
+                { "width", inputTexture.width / 2 },
+                { "height", inputTexture.height / 2 },
                 { "override_settings", new Dictionary<string, object>()
                     {
                         { "sd_model_checkpoint", "v1-5-pruned-emaonly" }
@@ -84,7 +84,19 @@ namespace Drawing
                     outputTexture.LoadImage(System.Convert.FromBase64String(image));
                     Sprite sprite = Sprite.Create(outputTexture, new Rect(0, 0, outputTexture.width, outputTexture.height), new Vector2(0.5f, 0.5f));
                     drawingCanvas.GetComponent<SpriteRenderer>().sprite = sprite;
+                    StretchSprite();
                 }
+            }
+        }
+    
+        public void StretchSprite()
+        {
+            SpriteRenderer spriteRenderer = drawingCanvas.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                float xScale = (float)inputTexture.width / (float)outputTexture.width;
+                float yScale = (float)inputTexture.height / (float)outputTexture.height;
+                spriteRenderer.transform.localScale = new Vector3(xScale, yScale, 1.0f);
             }
         }
     }
