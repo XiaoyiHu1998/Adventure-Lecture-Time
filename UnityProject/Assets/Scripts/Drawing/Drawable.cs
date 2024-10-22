@@ -244,6 +244,7 @@ namespace Drawing
                 gameObject.GetComponent<ControlNet>().DrawControlNet(predictions[^1]);
                 bottomRightPanel.SetActive(false);
                 interactable = false;
+                loadingPanel.SetActive(true);
             }
         }
 

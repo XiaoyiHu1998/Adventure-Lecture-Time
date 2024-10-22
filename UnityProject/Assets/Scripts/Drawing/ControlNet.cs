@@ -13,6 +13,7 @@ namespace Drawing
         public Texture2D outputTexture;
         public GameObject drawingCanvas;
         public GameObject continueButton;
+        public GameObject loadingPanel;
         
         public void DrawControlNet(string className)
         {
@@ -87,6 +88,7 @@ namespace Drawing
                     drawingCanvas.GetComponent<SpriteRenderer>().sprite = sprite;
                     StretchSprite();
                 }
+                loadingPanel.SetActive(false);
                 continueButton.SetActive(true);
             }
         }
