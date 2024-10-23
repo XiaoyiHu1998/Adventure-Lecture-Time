@@ -129,5 +129,16 @@ namespace Drawing
                 spriteRenderer.transform.localScale = new Vector3(xScale, yScale, 1.0f);
             }
         }
+
+        public void Reset() 
+        {
+            continueButton.SetActive(false);
+            loadingPanel.SetActive(false);
+            SpriteRenderer inputSpriteRenderer = drawingCanvas.GetComponent<SpriteRenderer>();
+            SpriteRenderer outputSpriteRenderer = outputImage.GetComponent<SpriteRenderer>();
+            inputSpriteRenderer.enabled = true;
+            inputSpriteRenderer.color = new Color(inputSpriteRenderer.color.r, inputSpriteRenderer.color.g, inputSpriteRenderer.color.b, 1f);
+            outputSpriteRenderer.sprite = null;
+        }
     }
 }

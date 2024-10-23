@@ -252,8 +252,22 @@ namespace Drawing
         public void Finish()
         {
             drawingManager.SetRecognizedObjectString(predictions[^1]);
+            Reset();
+        }
+
+        public void Reset()
+        {
+            ResetCanvas();
             continuePanel.SetActive(false);
+            bottomRightPanel.SetActive(true);
             interactable = true;
+            strokes.Clear();
+            predictions.Clear();
+            prev_colors.Clear();
+            strokes_undone = 0;
+            submitButton.interactable = false;
+            predictionText.text = "..............";
+            gameObject.GetComponent<ControlNet>().Reset();
         }
 
         // This is where the magic happens.
