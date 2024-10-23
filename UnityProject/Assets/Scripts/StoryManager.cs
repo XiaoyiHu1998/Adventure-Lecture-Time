@@ -52,8 +52,10 @@ public partial class StoryManager : MonoBehaviour
 
     public void Start()
     {
-        activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
-        sideCharacter = characterDatabase.Get(CharacterEnum.Character1);
+        activeCharacter = characterDatabase.Get(CharacterEnum.Character2);
+        sideCharacter = characterDatabase.Get(CharacterEnum.Character3);
+        mainGameManager.ToggleLeftCharacter(false);
+        mainGameManager.ToggleRightCharacter(false);
 
         initialStoryNode = new StoryNode();
         initialStoryNode.storyNodeType = StoryNodeType.OutputComplete;

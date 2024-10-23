@@ -37,11 +37,6 @@ public class MainGameManager : MonoBehaviour
 
     private bool canClickContinueButton = false;
 
-    //public void Start()
-    //{
-    //    storyManager.Continue();
-    //}
-
     public void LoadMainMenu()
     {
         SceneManager.LoadScene("MainMenuScene");
@@ -145,6 +140,15 @@ public class MainGameManager : MonoBehaviour
                 GameObject.Find("NameTextBox").GetComponent<TMP_Text>().text = newText;
                 break;
         }
+    }
+    public void ToggleLeftCharacter(bool active)
+    {
+        characterPanelLeftImage.gameObject.SetActive(active);
+    }
+
+    public void ToggleRightCharacter(bool active)
+    {
+        characterPanelRightImage.gameObject.SetActive(active);
     }
 
     internal void SubmitDrawingRecognizedObject(string recognizedObject)

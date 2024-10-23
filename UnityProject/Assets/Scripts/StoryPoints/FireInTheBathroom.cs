@@ -14,8 +14,8 @@ public partial class StoryManager
         {
             case 0:
                 // Manager wakes the player up
-                activeCharacter = characterDatabase.Get(CharacterEnum.Character2);
-                sideCharacter = characterDatabase.Get(CharacterEnum.Character3);
+                mainGameManager.ToggleLeftCharacter(true);
+                mainGameManager.ToggleRightCharacter(true);
 
                 text = "Hey wake up, we've got work to do. why are you sleeping on the job?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
@@ -72,6 +72,9 @@ public partial class StoryManager
             case 10:
                 // CHANGE BACKGROUND SPRITE
                 // Change characters to blank/empty
+                activeCharacter = characterDatabase.Get(CharacterEnum.Character4);
+                mainGameManager.ToggleLeftCharacter(false);
+                mainGameManager.ToggleRightCharacter(false);
                 Sprite newBackground = Resources.Load<Sprite>("Backgrounds/cool_bathroom");
                 Debug.Log(newBackground);
                 text = "Wowza, that is quite a fire. How did something like this happen?";
@@ -94,7 +97,6 @@ public partial class StoryManager
             case 13:
                 // Player uses the object
                 text = "John tries to put out a bathroom that is on fire using a: " + LastRecognizedObjectString;
-                activeCharacter = characterDatabase.Get(CharacterEnum.Character4);
 
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);
