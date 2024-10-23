@@ -103,6 +103,14 @@ public partial class StoryManager
                 break;
             case 14:
                 // The fire is extinguished
+                // Player uses the object
+                text = "Continue";
+
+                newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
+                GenerateMessage(activeCharacter.llmCharacter, text);
+                break;
+            case 15:
+                // The fire is extinguished
                 text = "Phew, im glad that worked out well, time to get back to my desk.";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";

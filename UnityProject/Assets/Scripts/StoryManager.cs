@@ -122,7 +122,6 @@ public partial class StoryManager : MonoBehaviour
         LastLLMOutputText = reply;
 
         StoryNode newStoryNode = GenerateGenericNode(reply, StoryNodeType.OutputIncomplete);
-        Debug.Log(newStoryNode.dialogueBoxText);
         mainGameManager.SubmitStoryNode(newStoryNode);
     }
 
