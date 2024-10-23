@@ -61,6 +61,12 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
+    public void ContinueInputComplete()
+    {
+        canClickContinueButton = true;
+        ContinueStoryButton();
+    }
+
     public void SubmitStoryNode(StoryNode storyNode)
     {
         switch(storyNode.storyNodeType)
@@ -127,7 +133,7 @@ public class MainGameManager : MonoBehaviour
         switch (targetText)
         {
             case PanelText.MainPanelText:
-                GameObject.Find("MainTextBox").GetComponent<TMP_Text>().text = newText;
+                GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = newText;
                 break;
 
             case PanelText.NamePanelText:
