@@ -30,7 +30,7 @@ public class DrawingManager : MonoBehaviour
         m_ObjectString = objectString;
         mainGameManager.SubmitDrawingRecognizedObject(m_ObjectString);
         DisableDrawing();
-        mainGameManager.ContinueStory();
+        mainGameManager.ContinueStoryButton();
     }
 
     public string GetRecognizedObjectString()
