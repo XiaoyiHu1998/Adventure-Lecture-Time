@@ -58,6 +58,7 @@ namespace Drawing
 
         Vector2 previous_drag_position;
         Color[] clean_colours_array;
+        Queue<string> jsonToPredict = new Queue<string>();
         Color transparent;
         Color32[] cur_colors;
         List<Color32[]> prev_colors = new List<Color32[]>();
@@ -65,7 +66,6 @@ namespace Drawing
         bool no_drawing_on_current_drag = false;
         List<List<List<int>>> strokes = new List<List<List<int>>>();
         List<string> predictions = new List<string>();
-        int strokes_undone = 0; // strokes that have been undone but have not yet been predicted
         bool interactable = true;
 
 
@@ -264,7 +264,7 @@ namespace Drawing
             strokes.Clear();
             predictions.Clear();
             prev_colors.Clear();
-            strokes_undone = 0;
+            jsonToPredict.Clear();
             submitButton.interactable = false;
             predictionText.text = "..............";
             gameObject.GetComponent<ControlNet>().Reset();
@@ -355,12 +355,26 @@ namespace Drawing
                 scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
             }
             json = JsonConvert.SerializeObject(new { drawing = scaled_strokes });
-            StartCoroutine(SendJsonRequest("http://127.0.0.1:5000/predict", json));
-
+            jsonToPredict.Enqueue(json);
         }
 
-        private IEnumerator SendJsonRequest(string url, string json)
+        private IEnumerator SendJsonRequests(string url)
         {
+            while(interactable)
+            {
+                yield return new WaitUntil(() => jsonToPredict.Count > 0);
+                yield return SendJsonRequest(url);
+                if (jsonToPredict.Count == 0 && strokes.Count > 0 && strokes.Count == predictions.Count)
+                {
+                    submitButton.interactable = true;
+                    predictionText.text = predictions[^1];
+                }
+            }
+        }
+
+        private IEnumerator SendJsonRequest(string url)
+        {
+            string json = jsonToPredict.Peek();
             using UnityWebRequest request = new UnityWebRequest(url, "POST");
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -377,18 +391,12 @@ namespace Drawing
                 string response = request.downloadHandler.text;
                 JObject jsonResponse = JObject.Parse(response);
                 string classValue = jsonResponse["class"]?.ToString();
-                if(strokes_undone > 0)
-                {
-                    strokes_undone--;
-                }
-                else
+
+                // If the json we predicted has not been removed from the queue, add the prediction to the list
+                if (jsonToPredict.Count > 0 && json == jsonToPredict.Peek())
                 {
                     predictions.Add(classValue);
-                }
-                if (predictions.Count == strokes.Count && strokes.Count > 0)
-                {
-                    submitButton.interactable = true;
-                    predictionText.text = classValue;
+                    jsonToPredict.Dequeue();
                 }
             }
         }
@@ -550,25 +558,25 @@ namespace Drawing
                 ApplyMarkedPixelChanges();
                 prev_colors.RemoveAt(prev_colors.Count - 1);
                 strokes.RemoveAt(strokes.Count - 1);
-                // If we have predictions that haven't been undone yet, remove the last one
-                // Otherwise, increment strokes_undone to remove it later
-                if (strokes.Count >= predictions.Count)
+                
+                
+                if (jsonToPredict.Count > 0)
                 {
-                    // Prediction has not finished yet, so we need to remove it later
-                    strokes_undone++;
+                    jsonToPredict.Dequeue();
                 }
-                else {
+                else 
+                {
                     predictions.RemoveAt(predictions.Count - 1);
                 }
-                if (strokes.Count == predictions.Count && strokes.Count > 0)
-                {
-                    submitButton.interactable = true;
-                    predictionText.text = predictions[^1];
-                }
-                else if (strokes.Count == 0)
+
+                if (strokes.Count == 0)
                 {
                     submitButton.interactable = false;
                     predictionText.text = "..............";
+                }
+                else if (jsonToPredict.Count == 0)
+                {
+                    predictionText.text = predictions[^1];
                 }
             }
         }
@@ -656,13 +664,18 @@ namespace Drawing
 
             // Should we reset our canvas image when we hit play in the editor?
             if (Reset_Canvas_On_Play)
-                ResetCanvas();
+                Reset();
 			else if (Reset_To_This_Texture_On_Play)
 			{
 				Graphics.CopyTexture(reset_texture, drawable_texture);
 				//drawable_texture = reset_texture;
 				Debug.Log("Reset texture");
 			}
+        }
+
+        void OnEnable() 
+        {
+            StartCoroutine(SendJsonRequests("http://127.0.0.1:5000/predict"));
         }
     }
 }
