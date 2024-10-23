@@ -57,8 +57,8 @@ public partial class StoryManager : MonoBehaviour
 
         initialStoryNode = new StoryNode();
         initialStoryNode.storyNodeType = StoryNodeType.OutputComplete;
-        initialStoryNode.activeCharacterName = "???";
-        initialStoryNode.dialogueBoxText = "...";
+        initialStoryNode.activeCharacterName = "Me";
+        initialStoryNode.dialogueBoxText = "ZZzzzz.... mimimimimimi.... *Sleeping noises*";
 
         initialStoryNode.background = null;
         initialStoryNode.characterLeft = activeCharacter;
@@ -117,7 +117,6 @@ public partial class StoryManager : MonoBehaviour
     // Do something with the reply from the llmCharacter
     void HandleReply(string reply)
     {
-        Debug.Log(reply);
         LastLLMOutputText = reply;
 
         StoryNode newStoryNode = GenerateGenericNode(reply, StoryNodeType.OutputIncomplete);
@@ -127,24 +126,10 @@ public partial class StoryManager : MonoBehaviour
 
     void ReplyCompleted()
     {
+        Debug.Log(LastLLMOutputText);
         StoryNode newStoryNode = GenerateGenericNode(LastLLMOutputText, StoryNodeType.OutputComplete);
         mainGameManager.SubmitStoryNode(newStoryNode);
     }
-
-    // General Story nodes
-    //StoryNode GenerateReplyNode(string reply, StoryNodeType storyNodeType)
-    //{
-    //    StoryNode newStoryNode = new StoryNode();
-    //    newStoryNode.storyNodeType = StoryNodeType.OutputIncomplete;
-    //    newStoryNode.activeCharacterName = activeCharacter.name;
-    //    newStoryNode.dialogueBoxText = reply;
-
-    //    newStoryNode.background = null;
-    //    newStoryNode.characterLeft = activeCharacter;
-    //    newStoryNode.characterRight = sideCharacter;
-
-    //    return newStoryNode;
-    //}
 
     StoryNode GenerateGenericNode(string text, StoryNodeType storyNodeType, Sprite background = null)
     {

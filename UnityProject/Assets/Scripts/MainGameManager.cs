@@ -104,7 +104,12 @@ public class MainGameManager : MonoBehaviour
         SetText(PanelText.MainPanelText, storyNode.dialogueBoxText);
 
         if (storyNode.background != null)
+        {
+            Debug.Log("Setting background image");
+            Debug.Log(storyNode.background);
             SetImage(PanelImage.Background, storyNode.background);
+        }
+            
 
         SetImage(PanelImage.CharacterLeft, storyNode.characterLeft.sprite);
         SetImage(PanelImage.CharacterRight, storyNode.characterRight.sprite);

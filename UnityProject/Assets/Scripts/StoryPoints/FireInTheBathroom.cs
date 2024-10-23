@@ -71,11 +71,11 @@ public partial class StoryManager
                 break;
             case 10:
                 // CHANGE BACKGROUND SPRITE
-                // CHANGE BACKGROUND SPRITE
                 // Change characters to blank/empty
-                // Change characters to blank/empty
+                Sprite newBackground = Resources.Load<Sprite>("Backgrounds/cool_bathroom");
+                Debug.Log(newBackground);
                 text = "Wowza, that is quite a fire. How did something like this happen?";
-                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete, newBackground);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 11:
@@ -83,7 +83,7 @@ public partial class StoryManager
                 text = "No time to waste, what should I use?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
-                break; 
+                break;
             case 12:
                 // Player draws an object to use
                 // THIS SHOULD BE DRAWINPUT

@@ -83,10 +83,10 @@ MonoBehaviour:
   AIName: Computer
   prompt: Computer is a literal semi-sentient computer that is currently being infected
     by a virus. The player is currently trying to save the computer. Computer needs
-    3 items to be saved, and will briefly explain how each item should be used in
-    order to save the computer, any leaps in logics are allowed in this explanation.
-    The computer talks only in fully capitalized words and uses computer words such
-    as BEEP BOOP.
+    3 items to be saved, and will briefly explain how it uses each item to fix itself
+    and defeat the virus, any leaps in logics are allowed in this explanation. The
+    computer talks only in fully capitalized words and uses computer words such as
+    BEEP BOOP.
   setNKeepToPrompt: 1
   chat: []
   grammarString: 

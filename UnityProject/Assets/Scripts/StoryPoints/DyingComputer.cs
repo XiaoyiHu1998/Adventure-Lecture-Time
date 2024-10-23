@@ -16,9 +16,9 @@ public partial class StoryManager
                 // CHANGE BACKGROUND TO NEON? HACKING
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character5);
                 sideCharacter = characterDatabase.Get(CharacterEnum.Character5);
-
+                Sprite newBackground = Resources.Load<Sprite>("Backgrounds/cool_bathroom");
                 text = "Wowzers, what is going on right now. Why is the room entirely purple?";
-                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete, newBackground);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 1:
