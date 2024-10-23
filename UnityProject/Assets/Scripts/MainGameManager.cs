@@ -35,6 +35,8 @@ public class MainGameManager : MonoBehaviour
     public UnityEngine.UI.Image characterPanelLeftImage;
     public UnityEngine.UI.Image characterPanelRightImage;
 
+    private bool canClickContinueButton = false;
+
     //public void Start()
     //{
     //    storyManager.Continue();
@@ -44,11 +46,19 @@ public class MainGameManager : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenuScene");
     }
-    
-    public void ContinueStory()
+
+    private void ContinueStory()
     {
         Debug.LogError("Continuing za story");
         storyManager.Continue();
+    }
+
+    public void ContinueStoryButton()
+    {
+        if(canClickContinueButton)
+        {
+            ContinueStory();
+        }
     }
 
     public void SubmitStoryNode(StoryNode storyNode)
@@ -58,22 +68,26 @@ public class MainGameManager : MonoBehaviour
             case StoryNodeType.OutputComplete:
                 mainCanvasGroup.interactable = true;
                 mainCanvasGroup.blocksRaycasts = true;
+                canClickContinueButton = true;
                 UnpackOutputStoryNode(storyNode);
                 break;
             case StoryNodeType.OutputIncomplete:
                 mainCanvasGroup.interactable = true;
                 mainCanvasGroup.blocksRaycasts = true;
+                canClickContinueButton = false;
                 UnpackOutputStoryNode(storyNode);
                 break;
             case StoryNodeType.TextInput:
                 mainCanvasGroup.interactable = true;
                 mainCanvasGroup.blocksRaycasts = true;
+                canClickContinueButton = false;
                 textInputManager.EnableTextInput();
                 break;
             case StoryNodeType.DrawInput:
                 drawingManager.EnableDrawing();
                 mainCanvasGroup.interactable = false;
                 mainCanvasGroup.blocksRaycasts = false;
+                canClickContinueButton = false;
                 break;
         }
     }
