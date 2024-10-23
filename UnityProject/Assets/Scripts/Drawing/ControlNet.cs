@@ -95,6 +95,7 @@ namespace Drawing
                 }
                 loadingPanel.SetActive(false);
                 continueButton.SetActive(true);
+                Drawable.readyToFinish = true;
             }
         }
 

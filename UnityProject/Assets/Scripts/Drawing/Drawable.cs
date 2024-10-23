@@ -26,6 +26,7 @@ namespace Drawing
         public static Color Pen_Colour = Color.black;     // Change these to change the default drawing settings
         // PEN WIDTH (actually, it's a radius, in pixels)
         public static int Pen_Width = 5;
+        public static bool readyToFinish = false;
 
 
         public delegate void Brush_Function(Vector2 world_position);
@@ -259,7 +260,7 @@ namespace Drawing
         // Detects when user is left clicking, which then call the appropriate function
         void Update()
         {
-            if (!interactable)
+            if (!interactable && !readyToFinish)
             {
                 return;
             }
@@ -274,6 +275,12 @@ namespace Drawing
             
             if (mouse_held_down && !no_drawing_on_current_drag)
             {
+                if (readyToFinish)
+                {
+                    Finish();
+                    readyToFinish = false;
+                    return;
+                }
                 if (hit != null && hit.transform != null)
                 {
                     // We're over the texture we're drawing on!
