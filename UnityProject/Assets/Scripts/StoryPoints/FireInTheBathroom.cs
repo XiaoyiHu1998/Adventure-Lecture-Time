@@ -14,8 +14,8 @@ public partial class StoryManager
         {
             case 0:
                 // Manager wakes the player up
-                activeCharacter = characterDatabase.Get(CharacterEnum.Character2);
-                sideCharacter = characterDatabase.Get(CharacterEnum.Character3);
+                mainGameManager.ToggleLeftCharacter(true);
+                mainGameManager.ToggleRightCharacter(true);
 
                 text = "Hey wake up, we've got work to do. why are you sleeping on the job?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
@@ -71,11 +71,14 @@ public partial class StoryManager
                 break;
             case 10:
                 // CHANGE BACKGROUND SPRITE
-                // CHANGE BACKGROUND SPRITE
                 // Change characters to blank/empty
-                // Change characters to blank/empty
+                activeCharacter = characterDatabase.Get(CharacterEnum.Character4);
+                mainGameManager.ToggleLeftCharacter(false);
+                mainGameManager.ToggleRightCharacter(false);
+                Sprite newBackground = Resources.Load<Sprite>("Backgrounds/cool_bathroom");
+                Debug.Log(newBackground);
                 text = "Wowza, that is quite a fire. How did something like this happen?";
-                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete, newBackground);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 11:
@@ -83,7 +86,7 @@ public partial class StoryManager
                 text = "No time to waste, what should I use?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
-                break; 
+                break;
             case 12:
                 // Player draws an object to use
                 // THIS SHOULD BE DRAWINPUT
@@ -94,26 +97,32 @@ public partial class StoryManager
             case 13:
                 // Player uses the object
                 text = "John tries to put out a bathroom that is on fire using a: " + LastRecognizedObjectString;
-                activeCharacter = characterDatabase.Get(CharacterEnum.Character4);
 
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);
                 break;
             case 14:
                 // The fire is extinguished
+                // Player uses the object
+                text = "Continue";
+
+                newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
+                GenerateMessage(activeCharacter.llmCharacter, text);
+                break;
+            case 15:
+                // The fire is extinguished
                 text = "Phew, im glad that worked out well, time to get back to my desk.";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             default:
-                // Finished the story
-                text = "End scene";
+                text = "You go back to your desk";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
-                newStoryNode.activeCharacterName = "???";
-                storyPoint = StoryPoint.Part2;
+                newStoryNode.activeCharacterName = "";
+                storyPoint = StoryPoint.Computer;
                 progress = 0;
-                break;
 
+                break;
         }
 
         return newStoryNode;

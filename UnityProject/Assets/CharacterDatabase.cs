@@ -10,7 +10,8 @@ public enum CharacterEnum
     Character1 = 1,
     Character2 = 2,
     Character3 = 3,
-    Character4 = 4
+    Character4 = 4,
+    Character5 = 5
 }
 
 [Serializable]

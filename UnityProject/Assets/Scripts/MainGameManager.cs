@@ -37,11 +37,6 @@ public class MainGameManager : MonoBehaviour
 
     private bool canClickContinueButton = false;
 
-    //public void Start()
-    //{
-    //    storyManager.Continue();
-    //}
-
     public void LoadMainMenu()
     {
         SceneManager.LoadScene("MainMenuScene");
@@ -59,6 +54,12 @@ public class MainGameManager : MonoBehaviour
         {
             ContinueStory();
         }
+    }
+
+    public void ContinueInputComplete()
+    {
+        canClickContinueButton = true;
+        ContinueStoryButton();
     }
 
     public void SubmitStoryNode(StoryNode storyNode)
@@ -98,7 +99,12 @@ public class MainGameManager : MonoBehaviour
         SetText(PanelText.MainPanelText, storyNode.dialogueBoxText);
 
         if (storyNode.background != null)
+        {
+            Debug.Log("Setting background image");
+            Debug.Log(storyNode.background);
             SetImage(PanelImage.Background, storyNode.background);
+        }
+            
 
         SetImage(PanelImage.CharacterLeft, storyNode.characterLeft.sprite);
         SetImage(PanelImage.CharacterRight, storyNode.characterRight.sprite);
@@ -127,13 +133,22 @@ public class MainGameManager : MonoBehaviour
         switch (targetText)
         {
             case PanelText.MainPanelText:
-                GameObject.Find("MainTextBox").GetComponent<TMP_Text>().text = newText;
+                GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = newText;
                 break;
 
             case PanelText.NamePanelText:
                 GameObject.Find("NameTextBox").GetComponent<TMP_Text>().text = newText;
                 break;
         }
+    }
+    public void ToggleLeftCharacter(bool active)
+    {
+        characterPanelLeftImage.gameObject.SetActive(active);
+    }
+
+    public void ToggleRightCharacter(bool active)
+    {
+        characterPanelRightImage.gameObject.SetActive(active);
     }
 
     internal void SubmitDrawingRecognizedObject(string recognizedObject)
