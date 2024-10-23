@@ -3742,7 +3742,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4193904799746505346}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4193904799590591901
 GameObject:
@@ -3917,8 +3917,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a33b8a6cf583c534b83219b0504884d0, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3926,7 +3926,7 @@ SpriteRenderer:
   m_Size: {x: 10, y: 7.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &4193904799600829913
@@ -3937,12 +3937,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4193904799600829915}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -559.91473, y: -1.0488595, z: -10.328303}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4193904799746505346}
-  m_RootOrder: 1
+  m_Father: {fileID: 4193904799700183042}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4193904799600829915
 GameObject:
@@ -3955,7 +3955,7 @@ GameObject:
   - component: {fileID: 4193904799600829913}
   - component: {fileID: 4193904799600829912}
   m_Layer: 0
-  m_Name: ReadWriteEnabledImage
+  m_Name: ControlNetImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3972,7 +3972,8 @@ Transform:
   m_LocalPosition: {x: -559.91473, y: -1.0488595, z: -10.3283}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4193904799600829913}
   m_Father: {fileID: 4193904799746505346}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4114,6 +4115,7 @@ MonoBehaviour:
   inputTexture: {fileID: 2800000, guid: a33b8a6cf583c534b83219b0504884d0, type: 3}
   outputTexture: {fileID: 2800000, guid: 6d844ff5c7b86db4badbbca522de6162, type: 3}
   drawingCanvas: {fileID: 4193904799700183103}
+  outputImage: {fileID: 4193904799600829915}
   continueButton: {fileID: 734442426}
   loadingPanel: {fileID: 76220684}
 --- !u!4 &4193904799746505346
@@ -4129,7 +4131,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4193904799700183042}
-  - {fileID: 4193904799600829913}
   - {fileID: 4193904799400469847}
   m_Father: {fileID: 0}
   m_RootOrder: 10

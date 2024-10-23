@@ -12,9 +12,12 @@ namespace Drawing
         public Texture2D inputTexture;
         public Texture2D outputTexture;
         public GameObject drawingCanvas;
+        public GameObject outputImage;
         public GameObject continueButton;
         public GameObject loadingPanel;
         
+        private float fadeDuration = 1.0f;
+
         public void DrawControlNet(string className)
         {
             StartCoroutine(GetControlNet(className));
@@ -85,17 +88,39 @@ namespace Drawing
                     var image = jsonResponse["images"][0].ToString();
                     outputTexture.LoadImage(System.Convert.FromBase64String(image));
                     Sprite sprite = Sprite.Create(outputTexture, new Rect(0, 0, outputTexture.width, outputTexture.height), new Vector2(0.5f, 0.5f));
-                    drawingCanvas.GetComponent<SpriteRenderer>().sprite = sprite;
-                    StretchSprite();
+                    SpriteRenderer inputSpriteRenderer = drawingCanvas.GetComponent<SpriteRenderer>();
+                    SpriteRenderer outputSpriteRenderer = outputImage.GetComponent<SpriteRenderer>();
+                    StretchSprite(outputSpriteRenderer);
+                    StartCoroutine(FadeSprites(inputSpriteRenderer, outputSpriteRenderer, sprite, fadeDuration));
                 }
                 loadingPanel.SetActive(false);
                 continueButton.SetActive(true);
             }
         }
-    
-        public void StretchSprite()
+
+        private IEnumerator FadeSprites(SpriteRenderer spriteRenderer1, SpriteRenderer spriteRenderer2, Sprite newSprite, float duration)
         {
-            SpriteRenderer spriteRenderer = drawingCanvas.GetComponent<SpriteRenderer>();
+            spriteRenderer2.sprite = newSprite;
+            spriteRenderer2.color = new Color(spriteRenderer2.color.r, spriteRenderer2.color.g, spriteRenderer2.color.b, 0f);
+
+            float elapsedTime = 0f;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float alpha1 = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+                float alpha2 = Mathf.Lerp(0f, 1f, elapsedTime / duration);
+                spriteRenderer1.color = new Color(spriteRenderer1.color.r, spriteRenderer1.color.g, spriteRenderer1.color.b, alpha1);
+                spriteRenderer2.color = new Color(spriteRenderer2.color.r, spriteRenderer2.color.g, spriteRenderer2.color.b, alpha2);
+                yield return null;
+            }
+
+            spriteRenderer1.enabled = false;
+            spriteRenderer2.color = new Color(spriteRenderer2.color.r, spriteRenderer2.color.g, spriteRenderer2.color.b, 1f);
+        }
+
+        public void StretchSprite(SpriteRenderer spriteRenderer)
+        {
             if (spriteRenderer != null)
             {
                 float xScale = (float)inputTexture.width / (float)outputTexture.width;
