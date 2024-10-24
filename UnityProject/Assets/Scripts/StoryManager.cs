@@ -49,7 +49,7 @@ public partial class StoryManager : MonoBehaviour
     private CharacterStruct activeCharacter;
     private CharacterStruct sideCharacter;
 
-    private StoryPoint storyPoint = StoryPoint.Coffee;
+    private StoryPoint storyPoint = StoryPoint.Introduction;
     private int progress = 0;
 
     public void Start()
