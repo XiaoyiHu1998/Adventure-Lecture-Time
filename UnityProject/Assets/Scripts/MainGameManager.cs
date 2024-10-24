@@ -135,34 +135,9 @@ public class MainGameManager : MonoBehaviour
         switch (targetText)
         {
             case PanelText.MainPanelText:
-                // Step 1: Save the current scroll position and content height
-                float scrollPosY = scrollRect.verticalNormalizedPosition;
-                float contentHeightBefore = scrollRect.content.rect.height;
-                float actualPosY = scrollPosY * contentHeightBefore;
-
-                // Step 2: Update the content
                 GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = newText;
                 Canvas.ForceUpdateCanvases();
-
-                // Step 3: Calculate the new scroll position based on the change in content height
-                float contentHeightAfter = scrollRect.content.rect.height;
-                float heightDifference = contentHeightAfter - contentHeightBefore;
-                float newActualPosY = actualPosY + heightDifference;
-                float newScrollPosY = newActualPosY / contentHeightAfter;
-
-                if (heightDifference != 0)
-                {
-                    Debug.Log("ScrollPosY: " + scrollPosY);
-                    Debug.Log("ContentHeightBefore: " + contentHeightBefore);
-                    Debug.Log("ActualPosY: " + actualPosY);
-                    Debug.Log("ContentHeightAfter: " + contentHeightAfter);
-                    Debug.Log("HeightDifference: " + heightDifference);
-                    Debug.Log("NewActualPosY: " + newActualPosY);
-                    Debug.Log("NewScrollPosY: " + newScrollPosY);
-                }
-
-                // Step 4: Set the scroll position to the new value
-                scrollRect.verticalNormalizedPosition = Mathf.Clamp01(newScrollPosY);
+                scrollRect.verticalNormalizedPosition = 0f;
                 break;
 
             case PanelText.NamePanelText:
