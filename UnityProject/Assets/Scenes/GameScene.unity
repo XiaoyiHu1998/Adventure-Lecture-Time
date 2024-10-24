@@ -1627,7 +1627,7 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: ceaa26d7f0d0c7f4e93f6716e82b047c, type: 3}
     llmCharacter: {fileID: 1100318877}
   - name: Computer
-    sprite: {fileID: 21300000, guid: ceaa26d7f0d0c7f4e93f6716e82b047c, type: 3}
+    sprite: {fileID: 21300000, guid: a4a40428132820245b07b6df3352e831, type: 3}
     llmCharacter: {fileID: 1655988980}
 --- !u!114 &724394382
 MonoBehaviour:
@@ -2169,7 +2169,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1742058425}
   m_Direction: 2
   m_Value: 1.0000002
-  m_Size: 0.84784454
+  m_Size: 0.8478445
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5166,15 +5166,10 @@ MonoBehaviour:
   Drawing_Layers:
     serializedVersion: 2
     m_Bits: 2147483647
-  Reset_Canvas_On_Play: 1
   Reset_Colour: {r: 1, g: 1, b: 1, a: 1}
-  Reset_To_This_Texture_On_Play: 0
-  reset_texture: {fileID: 2800000, guid: 403adc4c0a04e494ca2033818ca3c822, type: 3}
   submitButton: {fileID: 4193904799590591969}
   predictionText: {fileID: 4193904798330026955}
   bottomRightPanel: {fileID: 4193904799379181226}
-  loadingPanel: {fileID: 1034697486}
-  continuePanel: {fileID: 734442426}
 --- !u!212 &4193904799700183101
 SpriteRenderer:
   m_ObjectHideFlags: 0
