@@ -127,6 +127,7 @@ namespace Drawing
                 // Disable the submit button and reset the prediction text, not allowed to submit until the drawing is recognized
                 submitButton.interactable = false;
                 predictionText.text = "..............";
+                predictionText.color = Color.white;
 
                 strokes.Add(new List<List<int>>() {
                     new List<int>(),
@@ -279,6 +280,7 @@ namespace Drawing
             jsonToPredict.Clear();
             submitButton.interactable = false;
             predictionText.text = "..............";
+            predictionText.color = Color.white;
             readyToFinish = false;
             gameObject.GetComponent<ControlNet>().Reset();
         }
@@ -380,18 +382,26 @@ namespace Drawing
         // Coroutine which runs in the background and sends the JSON strings to the server for prediction
         // </summary>
         // <param name="url">The URL of the server</param>
-        private IEnumerator SendJsonRequests(string url)
+        private IEnumerator SendJsonRequests(string urlSingle, string urlTopN)
         {
             // Keep running while the user is allowed to draw on the canvas
             while(interactable)
             {
                 yield return new WaitUntil(() => jsonToPredict.Count > 0); // Wait until there is a JSON string to predict
-                yield return SendJsonRequest(url); // Send the JSON string to the server for prediction
+                if (drawingManager.targetObject != null && drawingManager.topNTargetObjects > 1)
+                {
+                    yield return SendTopNJsonRequest(urlTopN); // Send the JSON string to the server for prediction
+
+                }
+                else 
+                {
+                    yield return SendSingleJsonRequest(urlSingle); // Send the JSON string to the server for prediction
+
+                }
                 // If all the strokes have been predicted, enable the submit button and display the prediction
                 if (jsonToPredict.Count == 0 && strokes.Count > 0 && strokes.Count == predictions.Count) 
                 {
-                    submitButton.interactable = true;
-                    predictionText.text = predictions[^1];
+                    UpdatePrediction(predictions[^1]);        
                 }
             }
         }
@@ -400,7 +410,7 @@ namespace Drawing
         // Send a JSON string to the server for prediction
         // </summary>
         // <param name="url">The URL of the server</param>
-        private IEnumerator SendJsonRequest(string url)
+        private IEnumerator SendSingleJsonRequest(string url)
         {
             // Do not remove the json string from the queue until we have received a response so we can undo the stroke if needed
             string json = jsonToPredict.Peek();
@@ -427,6 +437,75 @@ namespace Drawing
                     predictions.Add(classValue);
                     jsonToPredict.Dequeue();
                 }
+            }
+        }
+
+        // <summary>
+        // Send a JSON string to the server for prediction
+        // </summary>
+        // <param name="url">The URL of the server</param>
+        private IEnumerator SendTopNJsonRequest(string url)
+        {
+            // Do not remove the json string from the queue until we have received a response so we can undo the stroke if needed
+            string json = jsonToPredict.Peek();
+            using UnityWebRequest request = new UnityWebRequest(url, "POST");
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError(request.error);
+            }
+            else if (request.result == UnityWebRequest.Result.Success)
+            {
+                string response = request.downloadHandler.text;
+                JObject jsonResponse = JObject.Parse(response);
+                List<string> classes = jsonResponse["classes"]?.ToObject<List<string>>();
+
+                string classValue;
+                if (classes.Contains(drawingManager.targetObject))
+                {
+                    classValue = drawingManager.targetObject;
+                }
+                else 
+                {
+                    classValue = classes[0];
+                }
+
+                // If the json we predicted has not been removed from the queue, add the prediction to the list
+                if (jsonToPredict.Count > 0 && json == jsonToPredict.Peek())
+                {
+                    predictions.Add(classValue);
+                    jsonToPredict.Dequeue();
+                }
+            }
+        }
+        
+        private void UpdatePrediction(string prediction)
+        {
+            if (drawingManager.targetObject == null)
+            {
+                submitButton.interactable = true;
+                predictionText.text = prediction;
+                predictionText.color = Color.white;
+            }
+            else if (drawingManager.targetObject == prediction)
+            {
+                submitButton.interactable = true;
+                predictionText.text = prediction;
+                predictionText.color = Color.green;
+            }
+            else
+            {
+                if (drawingManager.allowNonTargetObjects)
+                {
+                    submitButton.interactable = true;
+                }
+                predictionText.text = prediction;
+                predictionText.color = Color.red;
             }
         }
 
@@ -632,11 +711,12 @@ namespace Drawing
                 {
                     submitButton.interactable = false;
                     predictionText.text = "..............";
+                    predictionText.color = Color.white;
                 }
                 // Otherwise if the queue is empty, display the last prediction
                 else if (jsonToPredict.Count == 0)
                 {
-                    predictionText.text = predictions[^1];
+                    UpdatePrediction(predictions[^1]);
                 }
             }
         }
@@ -728,7 +808,7 @@ namespace Drawing
         // Start the coroutine to send the JSON strings to the server for prediction
         void OnEnable() 
         {
-            StartCoroutine(SendJsonRequests("http://127.0.0.1:5000/predict"));
+            StartCoroutine(SendJsonRequests("http://127.0.0.1:5000/predict", "http://127.0.0.1:5000/predict-top?n=" + drawingManager.topNTargetObjects));
         }
     }
 }

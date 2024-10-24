@@ -259,7 +259,7 @@ def predict_top():
   classes = get_classes()
 
   for prediction in predictions(input_njson):
-    top_classes = np.argsort(prediction['logits'])[-top_n:]
+    top_classes = np.argsort(prediction['logits'])[-top_n:][::-1]
     for i in top_classes:
       print(classes[i], ": ", prediction['logits'][i])
     return fl.jsonify({'classes': [classes[i] for i in top_classes]})
@@ -271,8 +271,6 @@ def predict():
   classes = get_classes()
 
   for prediction in predictions(input_njson):
-    for i, class_probability in enumerate(prediction['logits']):
-      print(classes[i], ": ", class_probability)
     print("Predicted: ", classes[prediction['predictions']])
     return fl.jsonify({'class': classes[prediction['predictions']]})
 
