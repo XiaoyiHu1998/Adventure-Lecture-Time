@@ -250,11 +250,42 @@ def model_fn(features, labels, mode, params):
       train_op=train_op,
       eval_metric_ops={"accuracy": tf.metrics.accuracy(labels, predictions)})
 
+@app.route('/predict-top', methods=['POST'])
+def predict_top():
+  top_n = fl.request.args.get('n', default=3, type=int)
+
+  input_njson = fl.request.get_json()
+
+  classes = get_classes()
+
+  for prediction in predictions(input_njson):
+    top_classes = np.argsort(prediction['logits'])[-top_n:]
+    for i in top_classes:
+      print(classes[i], ": ", prediction['logits'][i])
+    return fl.jsonify({'classes': [classes[i] for i in top_classes]})
+
 @app.route('/predict', methods=['POST'])
 def predict():
   input_njson = fl.request.get_json()
 
-  # Convert the dictionary to a JSON string
+  classes = get_classes()
+
+  for prediction in predictions(input_njson):
+    for i, class_probability in enumerate(prediction['logits']):
+      print(classes[i], ": ", class_probability)
+    print("Predicted: ", classes[prediction['predictions']])
+    return fl.jsonify({'class': classes[prediction['predictions']]})
+
+def predictions(input_njson):
+  """
+  Predicts the class of a drawing.
+
+  Args:
+    input_njson: A JSON dictionary containing the drawing to be classified.
+
+  Returns:
+    A dictionary containing the predicted class and the probabilities of each class.
+  """
   input_njson_str = json.dumps(input_njson)
 
   model_params = tf.contrib.training.HParams(
@@ -274,13 +305,7 @@ def predict():
 
   predictions = estimator.predict(input_fn=get_input_fn(parse_line(input_njson_str)))
 
-  classes = get_classes()
-
-  for prediction in predictions:
-    for i, class_probability in enumerate(prediction['logits']):
-      print(classes[i], ": ", class_probability)
-    print("Predicted: ", classes[prediction['predictions']])
-    return fl.jsonify({'class': classes[prediction['predictions']]})
+  return predictions
 
 
 if __name__ == "__main__":
