@@ -1,5 +1,6 @@
 using LLMUnity;
 using Palmmedia.ReportGenerator.Core.Reporting.Builders;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -135,6 +136,8 @@ public class MainGameManager : MonoBehaviour
         {
             case PanelText.MainPanelText:
                 GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = newText;
+                Canvas.ForceUpdateCanvases();
+                scrollRect.verticalNormalizedPosition = 0f;
                 break;
 
             case PanelText.NamePanelText:
