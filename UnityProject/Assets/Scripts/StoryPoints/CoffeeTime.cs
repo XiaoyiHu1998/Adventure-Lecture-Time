@@ -70,7 +70,7 @@ public partial class StoryManager
                 newStoryNode = GenerateGenericNode("Answer the question", StoryNodeType.DrawInput);
                 break;
             case 11:
-                text = "The player answers the following question: With what object would you fight of a bear, with this answer:" + LastRecognizedObjectString;
+                text = "The player answers the following question, which is the final trial: With what object would you fight of a bear, with this answer:" + LastRecognizedObjectString;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);
                 break;
@@ -89,6 +89,7 @@ public partial class StoryManager
                 newStoryNode.activeCharacterName = "Narrator";
                 break;
             case 15:
+                mainGameManager.ToggleLeftCharacter(false);
                 text = "Before you fall asleep, you realise the game is over, and you're about to loop back to the beginning.";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Narrator";
