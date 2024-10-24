@@ -45,7 +45,7 @@ public partial class StoryManager
                 break;
             case 3:
                 // Manager tells the player to listen to the colleague
-                text = "Anyway, I believe your colleague Y.H. has a job for you, if you�d like to look into it";
+                text = "Anyway, I believe your colleague Y.H. has a job for you, if you'd like to look into it";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 break;
             case 4:
