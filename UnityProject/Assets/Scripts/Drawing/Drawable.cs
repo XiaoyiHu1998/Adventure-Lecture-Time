@@ -21,36 +21,29 @@ namespace Drawing
     // 4. Hold down left mouse to draw on this texture!
     public class Drawable : MonoBehaviour
     {
-        public DrawingManager drawingManager;
+        public DrawingManager drawingManager; // The drawing manager that will handle the recognized object string and the next story event
         // PEN COLOUR
         public static Color Pen_Colour = Color.black;     // Change these to change the default drawing settings
         // PEN WIDTH (actually, it's a radius, in pixels)
         public static int Pen_Width = 5;
-        public static bool readyToFinish = false;
+        public static bool readyToFinish = false; // Whether the user is allowed to continue with the story
 
 
-        public delegate void Brush_Function(Vector2 world_position);
+        public delegate void Brush_Function(Vector2 world_position); 
         // This is the function called when a left click happens
         // Pass in your own custom one to change the brush type
         // Set the default function in the Awake method
         public Brush_Function current_brush;
 
-        public LayerMask Drawing_Layers;
+        public LayerMask Drawing_Layers; // The layers that can be drawn on, used to check if the mouse is over the canvas
 
-        public bool Reset_Canvas_On_Play = true;
-        // The colour the canvas is reset to each time
         public Color Reset_Colour = new Color(0, 0, 0, 0);  // By default, reset the canvas to be transparent
 		
-		public bool Reset_To_This_Texture_On_Play = false;	// If true, will reset the image back to whatever reset texture is
-		public Texture2D reset_texture;
-
         // Used to reference THIS specific file without making all methods static
-        public static Drawable drawable;
-        public Button submitButton;
-        public TMP_Text predictionText;
-        public GameObject bottomRightPanel;
-        public GameObject loadingPanel;
-        public GameObject continuePanel;
+        public static Drawable drawable; 
+        public Button submitButton; // The button that will be enabled after the drawing is recognized, to submit the drawing
+        public TMP_Text predictionText; // The text that will display the recognized object string
+        public GameObject bottomRightPanel; // This panel will be active while the user is drawing
         
         // MUST HAVE READ/WRITE enabled set in the file editor of Unity
         Sprite drawable_sprite;
@@ -58,15 +51,15 @@ namespace Drawing
 
         Vector2 previous_drag_position;
         Color[] clean_colours_array;
-        Queue<string> jsonToPredict = new Queue<string>();
-        Color transparent;
-        Color32[] cur_colors;
-        List<Color32[]> prev_colors = new List<Color32[]>();
+        Queue<string> jsonToPredict = new Queue<string>(); // The queue of JSON strings to be sent to the server for prediction
+        Color transparent; 
+        Color32[] cur_colors; // The current colours of the pixels on the texture
+        List<Color32[]> prev_colors = new List<Color32[]>(); // The previous colours of the pixels on the texture
         bool mouse_was_previously_held_down = false;
-        bool no_drawing_on_current_drag = false;
-        List<List<List<int>>> strokes = new List<List<List<int>>>();
-        List<string> predictions = new List<string>();
-        bool interactable = true;
+        bool no_drawing_on_current_drag = false; // If the user is not drawing on the current drag
+        List<List<List<int>>> strokes = new List<List<List<int>>>(); // The list of strokes drawn by the user, in the format used by the prediction model
+        List<string> predictions = new List<string>(); // The list of predictions that have been received from the server
+        bool interactable = true; // Whether the user is allowed to draw on the canvas
 
 
 
@@ -122,13 +115,19 @@ namespace Drawing
         }
 
 
+        // <summary>
+        // Add the current stroke to the list of strokes
+        // </summary>
+        // <param name="pixel_pos">The current pixel position of the mouse</param>
         private void AddStroke(Vector2 pixel_pos)
         {            
             if (previous_drag_position == Vector2.zero)
             {
+                // User has started a new stroke
+                // Disable the submit button and reset the prediction text, not allowed to submit until the drawing is recognized
                 submitButton.interactable = false;
                 predictionText.text = "..............";
-                // Start a new stroke if we're not dragging already
+
                 strokes.Add(new List<List<int>>() {
                     new List<int>(),
                     new List<int>()
@@ -138,6 +137,7 @@ namespace Drawing
             }
             else if (previous_drag_position != pixel_pos)
             {
+                // User is still drawing the current stroke and the current position is different from the previous one
                 strokes[^1][0].Add((int)pixel_pos.x);
                 strokes[^1][1].Add((int)(drawable_texture.height - pixel_pos.y));
             }
@@ -181,7 +181,10 @@ namespace Drawing
 
         //////////////////////////////////////////////////////////////////////////////
 
-
+        // <summary>
+        // Scale and interpolate between points in the strokes list to have the minimum and maximum x and y values be 0 and 255
+        // </summary>
+        // <param name="strokes">The list of strokes to scale and interpolate</param>
         private List<List<List<int>>> ScaleStrokes(List<List<List<int>>> strokes) 
         {   
             // Get the maximum and minimum x and y values
@@ -226,10 +229,12 @@ namespace Drawing
                 {
                     if (scaled_strokes[i][0][j] == scaled_strokes[i][0][j - 1] && scaled_strokes[i][1][j] == scaled_strokes[i][1][j - 1])
                     {
+                        // This point is the same as the previous one, so we skip it
                         continue;
                     }
                     Vector2 start_point = new Vector2(scaled_strokes[i][0][j - 1], scaled_strokes[i][1][j - 1]);
                     Vector2 end_point = new Vector2(scaled_strokes[i][0][j], scaled_strokes[i][1][j]);
+                    // Interpolate between the two points
                     StrokeBetween(start_point, end_point, newStroke);
                 }
                 scaled_strokes[i] = newStroke;
@@ -237,28 +242,35 @@ namespace Drawing
             return scaled_strokes;
         }
 
-
+        // <summary>
+        // User has clicked the submit button, draw the control net and disable the drawing canvas
+        // </summary>
         public void SubmitDrawing()
         {
             if (strokes.Count == predictions.Count)
             {
                 gameObject.GetComponent<ControlNet>().DrawControlNet(predictions[^1]);
                 bottomRightPanel.SetActive(false);
+                // User is no longer allowed to draw on the canvas
                 interactable = false;
-                loadingPanel.SetActive(true);
             }
         }
 
+        // <summary>
+        // User has clicked the continue button, reset the drawing canvas and enable the next story event
+        // </summary>
         public void Finish()
         {
             drawingManager.SetRecognizedObjectString(predictions[^1]);
             Reset();
         }
 
+        // <summary>
+        // Reset the drawing canvas to its initial state
+        // </summary>
         public void Reset()
         {
             ResetCanvas();
-            continuePanel.SetActive(false);
             bottomRightPanel.SetActive(true);
             interactable = true;
             strokes.Clear();
@@ -267,6 +279,7 @@ namespace Drawing
             jsonToPredict.Clear();
             submitButton.interactable = false;
             predictionText.text = "..............";
+            readyToFinish = false;
             gameObject.GetComponent<ControlNet>().Reset();
         }
 
@@ -291,16 +304,19 @@ namespace Drawing
             {
                 if (readyToFinish)
                 {
+                    // The user has finished drawing and is allowed to continue with the story
+                    // The user has clicked the screen, which also acts as a continue button
                     Finish();
-                    readyToFinish = false;
                     return;
                 }
                 if (hit != null && hit.transform != null)
                 {
                     // We're over the texture we're drawing on!
-                    // Use whatever function the current brush is
                     if (previous_drag_position == Vector2.zero)
                     {
+                        // We were not previously drawing, but now we are
+                        // This means we've started a new drawing stroke
+                        // Save the current image state to allow for undoing
                         prev_colors.Add(drawable_texture.GetPixels32());
                     }
                     Vector2 pixel_pos = WorldToPixelCoordinates(mouse_world_position);
@@ -342,6 +358,9 @@ namespace Drawing
             mouse_was_previously_held_down = mouse_held_down;
         }
 
+        // <summary>
+        // Send the list of strokes to the server for prediction
+        // </summary>
         public void PredictStrokes(List<List<List<int>>> strokes) 
         {
             if (strokes.Count == 0)
@@ -349,22 +368,27 @@ namespace Drawing
                 return;
             }
             List<List<List<int>>> scaled_strokes = ScaleStrokes(strokes);
-            string json = JsonConvert.SerializeObject(scaled_strokes);
             for (int i = 0; i < scaled_strokes.Count; i++)
             {
                 scaled_strokes[i] = RamerDouglasPeucker(scaled_strokes[i]);
             }
-            json = JsonConvert.SerializeObject(new { drawing = scaled_strokes });
+            string json = JsonConvert.SerializeObject(new { drawing = scaled_strokes });
             jsonToPredict.Enqueue(json);
         }
 
+        // <summary>
+        // Coroutine which runs in the background and sends the JSON strings to the server for prediction
+        // </summary>
+        // <param name="url">The URL of the server</param>
         private IEnumerator SendJsonRequests(string url)
         {
+            // Keep running while the user is allowed to draw on the canvas
             while(interactable)
             {
-                yield return new WaitUntil(() => jsonToPredict.Count > 0);
-                yield return SendJsonRequest(url);
-                if (jsonToPredict.Count == 0 && strokes.Count > 0 && strokes.Count == predictions.Count)
+                yield return new WaitUntil(() => jsonToPredict.Count > 0); // Wait until there is a JSON string to predict
+                yield return SendJsonRequest(url); // Send the JSON string to the server for prediction
+                // If all the strokes have been predicted, enable the submit button and display the prediction
+                if (jsonToPredict.Count == 0 && strokes.Count > 0 && strokes.Count == predictions.Count) 
                 {
                     submitButton.interactable = true;
                     predictionText.text = predictions[^1];
@@ -372,8 +396,13 @@ namespace Drawing
             }
         }
 
+        // <summary>
+        // Send a JSON string to the server for prediction
+        // </summary>
+        // <param name="url">The URL of the server</param>
         private IEnumerator SendJsonRequest(string url)
         {
+            // Do not remove the json string from the queue until we have received a response so we can undo the stroke if needed
             string json = jsonToPredict.Peek();
             using UnityWebRequest request = new UnityWebRequest(url, "POST");
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
@@ -401,6 +430,11 @@ namespace Drawing
             }
         }
 
+        // <summary>
+        // Use the Ramer-Douglas-Peucker algorithm to reduce the number of points in a stroke, needed for prediction
+        // </summary>
+        // <param name="stroke">The stroke to reduce</param>
+        // <param name="epsilon">The epsilon value for the algorithm</param>
         private List<List<int>> RamerDouglasPeucker(List<List<int>> stroke, float epsilon = 2.0f)
         {
             // Find the point with the maximum distance
@@ -445,6 +479,15 @@ namespace Drawing
             return resultStroke;
         }
 
+        // <summary>
+        // Calculate the perpendicular distance between a point and a line
+        // </summary>
+        // <param name="x">The x coordinate of the point</param>
+        // <param name="y">The y coordinate of the point</param>
+        // <param name="x1">The x coordinate of the start of the line</param>
+        // <param name="y1">The y coordinate of the start of the line</param>
+        // <param name="x2">The x coordinate of the end of the line</param>
+        // <param name="y2">The y coordinate of the end of the line</param>
         private float PerpendicularDistance(int x, int y, int x1, int y1, int x2, int y2)
         {
             float A = x - x1;
@@ -481,6 +524,12 @@ namespace Drawing
             return Mathf.Sqrt((x - xx) * (x - xx) + (y - yy) * (y - yy));
         }
 
+        // <summary>
+        // Interpolate between two points and add the interpolated points to the stroke
+        // </summary>
+        // <param name="start_point">The start point of the interpolation</param>
+        // <param name="end_point">The end point of the interpolation</param>
+        // <param name="stroke">The stroke to add the interpolated points to</param>
         public void StrokeBetween(Vector2 start_point, Vector2 end_point, List<List<int>> stroke)
         {
             float distance = Vector2.Distance(start_point, end_point);
@@ -511,10 +560,7 @@ namespace Drawing
             }
         }
 
-
-
-
-
+        // Mark pixels to be coloured in a square around the center pixel
         public void MarkPixelsToColour(Vector2 center_pixel, int pen_thickness, Color color_of_pen)
         {
             // Figure out how many pixels we need to colour in each direction (x and y)
@@ -534,6 +580,8 @@ namespace Drawing
                 }
             }
         }
+
+        // Mark a pixel to be changed to a specific colour
         public void MarkPixelToChange(int x, int y, Color color)
         {
             // Need to transform x and y coordinates to flat coordinates of array
@@ -545,35 +593,47 @@ namespace Drawing
 
             cur_colors[array_pos] = color;
         }
+
+        // Apply the changes we've made to the pixels
         public void ApplyMarkedPixelChanges()
         {
             drawable_texture.SetPixels32(cur_colors);
             drawable_texture.Apply();
         }
 
+        // Undo the last stroke
         public void UndoStroke() {
+            // There needs to be a stroke to undo
             if (strokes.Count > 0 && prev_colors.Count > 0)
             {
+                // Reset the canvas to the previous state
                 cur_colors = prev_colors[^1];
                 ApplyMarkedPixelChanges();
                 prev_colors.RemoveAt(prev_colors.Count - 1);
+                // Remove the last stroke
                 strokes.RemoveAt(strokes.Count - 1);
                 
-                
+                // If there are still strokes left to predict, remove the last stroke from the queue
                 if (jsonToPredict.Count > 0)
                 {
-                    jsonToPredict.Dequeue();
+                    // Remove the last item from the queue
+                    List<string> temp = new List<string>(jsonToPredict);
+                    temp.RemoveAt(temp.Count - 1);
+                    jsonToPredict = new Queue<string>(temp);
                 }
+                // Otherwise, remove the last prediction
                 else 
                 {
                     predictions.RemoveAt(predictions.Count - 1);
                 }
 
+                // If there are no more strokes, disable the submit button and reset the prediction text
                 if (strokes.Count == 0)
                 {
                     submitButton.interactable = false;
                     predictionText.text = "..............";
                 }
+                // Otherwise if the queue is empty, display the last prediction
                 else if (jsonToPredict.Count == 0)
                 {
                     predictionText.text = predictions[^1];
@@ -654,7 +714,7 @@ namespace Drawing
             // DEFAULT BRUSH SET HERE
             current_brush = PenBrush;
 
-            drawable_sprite = this.GetComponent<SpriteRenderer>().sprite;
+            drawable_sprite = GetComponent<SpriteRenderer>().sprite;
             drawable_texture = drawable_sprite.texture;
 
             // Initialize clean pixels to use
@@ -662,17 +722,10 @@ namespace Drawing
             for (int x = 0; x < clean_colours_array.Length; x++)
                 clean_colours_array[x] = Reset_Colour;
 
-            // Should we reset our canvas image when we hit play in the editor?
-            if (Reset_Canvas_On_Play)
-                Reset();
-			else if (Reset_To_This_Texture_On_Play)
-			{
-				Graphics.CopyTexture(reset_texture, drawable_texture);
-				//drawable_texture = reset_texture;
-				Debug.Log("Reset texture");
-			}
+            Reset();
         }
 
+        // Start the coroutine to send the JSON strings to the server for prediction
         void OnEnable() 
         {
             StartCoroutine(SendJsonRequests("http://127.0.0.1:5000/predict"));
