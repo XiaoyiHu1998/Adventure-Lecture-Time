@@ -38,6 +38,7 @@ public class MainGameManager : MonoBehaviour
     public UnityEngine.UI.Image characterPanelRightImage;
 
     private bool canClickContinueButton = false;
+    private Coroutine textRevealCoroutine;
 
     public void LoadMainMenu()
     {
@@ -135,9 +136,12 @@ public class MainGameManager : MonoBehaviour
         switch (targetText)
         {
             case PanelText.MainPanelText:
-                GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = newText;
-                Canvas.ForceUpdateCanvases();
-                scrollRect.verticalNormalizedPosition = 0f;
+                TMP_Text mainText = GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>();
+                if (textRevealCoroutine != null)
+                {
+                    StopCoroutine(textRevealCoroutine);
+                }
+                textRevealCoroutine = StartCoroutine(RevealText(mainText, newText));
                 break;
 
             case PanelText.NamePanelText:
@@ -145,6 +149,19 @@ public class MainGameManager : MonoBehaviour
                 break;
         }
     }
+
+    private IEnumerator RevealText(TMP_Text textComponent, string fullText)
+    {
+        textComponent.text = "";
+        foreach (char letter in fullText.ToCharArray())
+        {
+            textComponent.text += letter;
+            yield return new WaitForSeconds(0.05f);
+        }
+        Canvas.ForceUpdateCanvases();
+        scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
+    }
+
     public void ToggleLeftCharacter(bool active)
     {
         characterPanelLeftImage.gameObject.SetActive(active);
