@@ -30,6 +30,7 @@ public class MainGameManager : MonoBehaviour
     public DrawingManager drawingManager;
     public GameObject mainCanvas;
     public CanvasGroup mainCanvasGroup;
+    public ScrollRect scrollRect;
 
     public UnityEngine.UI.Image mainPanelImage;
     public UnityEngine.UI.Image characterPanelLeftImage;
@@ -149,6 +150,10 @@ public class MainGameManager : MonoBehaviour
     public void ToggleRightCharacter(bool active)
     {
         characterPanelRightImage.gameObject.SetActive(active);
+    }
+    public void ScrollToTop()
+    {
+        scrollRect.verticalNormalizedPosition = 1f; // 1 means top
     }
 
     internal void SubmitDrawingRecognizedObject(string recognizedObject)

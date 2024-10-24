@@ -91,7 +91,7 @@ public partial class StoryManager : MonoBehaviour
         }
         
         progress++;
-
+        mainGameManager.ScrollToTop();
         mainGameManager.SubmitStoryNode(newStoryNode);
     }
 
