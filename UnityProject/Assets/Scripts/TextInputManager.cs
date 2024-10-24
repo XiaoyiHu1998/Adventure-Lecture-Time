@@ -33,7 +33,7 @@ public class TextInputManager : MonoBehaviour
         string inputText = textInputText.text;
         storyManager.SubmitInputText(inputText);
 
-        Debug.LogError(inputText);
+        Debug.Log(inputText);
         ToggleTextInput();
     }
 

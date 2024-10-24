@@ -44,7 +44,7 @@ public class MainGameManager : MonoBehaviour
 
     private void ContinueStory()
     {
-        Debug.LogError("Continuing za story");
+        Debug.Log("Continuing za story");
         storyManager.Continue();
     }
 
