@@ -8,7 +8,7 @@ public class TextInputManager : MonoBehaviour
     private bool textInputEnabled;
     public StoryManager storyManager;
 
-    public TMPro.TMP_Text textInputText;
+    public TMPro.TMP_InputField textInputField;
 
     private void Start()
     {
@@ -30,10 +30,11 @@ public class TextInputManager : MonoBehaviour
 
     public void HandleTextInputSubmitted()
     {
-        string inputText = textInputText.text;
+        string inputText = textInputField.text;
         storyManager.SubmitInputText(inputText);
 
         Debug.Log(inputText);
+        textInputField.text = "";
         ToggleTextInput();
     }
 

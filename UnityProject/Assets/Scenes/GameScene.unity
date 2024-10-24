@@ -2377,7 +2377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textInput: {fileID: 2086979062}
   storyManager: {fileID: 724394382}
-  textInputText: {fileID: 1441621895}
+  textInputField: {fileID: 1108038527}
 --- !u!4 &859571509
 Transform:
   m_ObjectHideFlags: 0
