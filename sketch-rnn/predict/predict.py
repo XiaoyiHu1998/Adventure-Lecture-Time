@@ -252,6 +252,11 @@ def model_fn(features, labels, mode, params):
 
 @app.route('/predict-top', methods=['POST'])
 def predict_top():
+  """
+  Predicts the top n classes of a drawing.
+  Input is a JSON dictionary containing the drawing to be classified.
+  Outputs a JSON dictionary containing the top n classes.
+  """
   top_n = fl.request.args.get('n', default=3, type=int)
 
   input_njson = fl.request.get_json()
@@ -259,6 +264,7 @@ def predict_top():
   classes = get_classes()
 
   for prediction in predictions(input_njson):
+    # Get the top n classes, in descending order of probability
     top_classes = np.argsort(prediction['logits'])[-top_n:][::-1]
     for i in top_classes:
       print(classes[i], ": ", prediction['logits'][i])
@@ -266,6 +272,11 @@ def predict_top():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+  """
+  Predicts the class of a drawing. 
+  Input is a JSON dictionary containing the drawing to be classified.
+  Outputs a JSON dictionary containing the predicted class.
+  """
   input_njson = fl.request.get_json()
 
   classes = get_classes()

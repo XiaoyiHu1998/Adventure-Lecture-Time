@@ -381,7 +381,8 @@ namespace Drawing
         // <summary>
         // Coroutine which runs in the background and sends the JSON strings to the server for prediction
         // </summary>
-        // <param name="url">The URL of the server</param>
+        // <param name="urlSingle">The URL of the server for single object prediction</param>
+        // <param name="urlTopN">The URL of the server for top N object prediction</param>
         private IEnumerator SendJsonRequests(string urlSingle, string urlTopN)
         {
             // Keep running while the user is allowed to draw on the canvas
@@ -390,7 +391,7 @@ namespace Drawing
                 yield return new WaitUntil(() => jsonToPredict.Count > 0); // Wait until there is a JSON string to predict
                 if (drawingManager.targetObject != null && drawingManager.topNTargetObjects > 1)
                 {
-                    yield return SendTopNJsonRequest(urlTopN); // Send the JSON string to the server for prediction
+                    yield return SendTopNJsonRequest(urlTopN); // Send the JSON string to the server for top N predictions
 
                 }
                 else 
@@ -398,7 +399,7 @@ namespace Drawing
                     yield return SendSingleJsonRequest(urlSingle); // Send the JSON string to the server for prediction
 
                 }
-                // If all the strokes have been predicted, enable the submit button and display the prediction
+                // If all the strokes have been predicted, update the prediction text
                 if (jsonToPredict.Count == 0 && strokes.Count > 0 && strokes.Count == predictions.Count) 
                 {
                     UpdatePrediction(predictions[^1]);        
@@ -441,7 +442,7 @@ namespace Drawing
         }
 
         // <summary>
-        // Send a JSON string to the server for prediction
+        // Send a JSON string to the server for prediction and get the top N predictions
         // </summary>
         // <param name="url">The URL of the server</param>
         private IEnumerator SendTopNJsonRequest(string url)
@@ -465,11 +466,13 @@ namespace Drawing
                 JObject jsonResponse = JObject.Parse(response);
                 List<string> classes = jsonResponse["classes"]?.ToObject<List<string>>();
 
+                // If the target object is in the list of classes, set the class value to the target object
                 string classValue;
                 if (classes.Contains(drawingManager.targetObject))
                 {
                     classValue = drawingManager.targetObject;
                 }
+                // Otherwise, set the class value to the most likely class
                 else 
                 {
                     classValue = classes[0];
@@ -484,24 +487,32 @@ namespace Drawing
             }
         }
         
+        // <summary>
+        // Update the prediction text based on the prediction
+        // </summary>
+        // <param name="prediction">The prediction to update the text with</param>
         private void UpdatePrediction(string prediction)
         {
             if (drawingManager.targetObject == null)
             {
+                // The user is allowed to submit any recognized object
                 submitButton.interactable = true;
                 predictionText.text = prediction;
                 predictionText.color = Color.white;
             }
             else if (drawingManager.targetObject == prediction)
             {
+                // The user has drawn the target object
                 submitButton.interactable = true;
                 predictionText.text = prediction;
                 predictionText.color = Color.green;
             }
             else
             {
+                // The user has not drawn the target object
                 if (drawingManager.allowNonTargetObjects)
                 {
+                    // The user is allowed to submit a recognized object that is not the target object
                     submitButton.interactable = true;
                 }
                 predictionText.text = prediction;
