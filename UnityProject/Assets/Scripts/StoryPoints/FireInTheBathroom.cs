@@ -128,7 +128,7 @@ public partial class StoryManager
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "";
                 storyPoint = StoryPoint.Computer;
-                progress = 0;
+                progress = -1;
 
                 break;
         }

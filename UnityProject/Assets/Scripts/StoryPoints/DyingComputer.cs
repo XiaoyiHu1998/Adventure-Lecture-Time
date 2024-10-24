@@ -9,13 +9,15 @@ public partial class StoryManager
         StoryNode newStoryNode = new StoryNode();
         string text;
 
+        
+
 
         switch (progress)
         {
             case 0:
                 // CHANGE BACKGROUND TO NEON? HACKING
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character5);
-                sideCharacter = characterDatabase.Get(CharacterEnum.Character5);
+                //sideCharacter = characterDatabase.Get(CharacterEnum.Character5);
                 Sprite newBackground = Resources.Load<Sprite>("Backgrounds/neon_virus");
                 text = "Wowzers, what is going on right now. Why is the room entirely purple?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete, newBackground);
@@ -63,28 +65,44 @@ public partial class StoryManager
 
                 if (text == "hammer")
                 {
-                    text = "I have a hammer, what do I do with it?";
-                    
+                    text = "I have a hammer, here you go";
                 }
                 else
                 {
-                    text = "Why do I have a " + text + "? I needed a hammer.";
+                    drawAttempt++;
                     progress = 6;
+                    switch (drawAttempt)
+                    {
+                        case 1:
+                            text = "Why do I have a " + text + "? I needed a hammer.";
+                            break;
+                        case 2:
+                            text = "I need a hammer. H A M M E R";
+                            break;
+                        case 3:
+                            text = "Please, it's not that hard";
+                            break;
+                        default:
+                            text = "I give up, a " + text + " will do...";
+                            progress = 8;
+                            break;
+                    }
                 }
 
-                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputIncomplete);
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 9:
                 // Player says he's going to the bathroom
-                text = "The first item the player has is a Hammer, how should they use it to help Computer?";
-
+                
+                text = "The first item the player has is a " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
+                drawAttempt = 0;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);
                 break;
             case 10:
                 // object 1
-                text = "On it";
+                text = "Thats cool";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
@@ -104,27 +122,43 @@ public partial class StoryManager
 
                 if (text == "apple")
                 {
-                    text = "I have an apple, what do I do with it?";
+                    text = "I have an apple, here you go";
                 }
                 else
                 {
-                    text = "Why do I have a " + text + "? I needed an apple.";
+                    drawAttempt++;
                     progress = 11;
+                    switch (drawAttempt)
+                    {
+                        case 1:
+                            text = "Why do I have a " + text + "? I needed a apple.";
+                            break;
+                        case 2:
+                            text = "I need an apple. A P P L E";
+                            break;
+                        case 3:
+                            text = "Please, it's not that hard";
+                            break;
+                        default:
+                            text = "I give up, a " + text + " will do...";
+                            progress = 13;
+                            break;
+                    }
                 }
 
-                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputIncomplete);
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 14:
                 // object 2
-                text = "The first item the player has is an Apple, how should they use it to help Computer?";
-
+                text = "The second item the player has is an " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
+                drawAttempt = 0;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);
                 break;
             case 15:
                 // object 2
-                text = "Roger";
+                text = "Nice";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
@@ -159,23 +193,39 @@ public partial class StoryManager
                 }
                 else
                 {
-                    text = "Why do I have a " + text + "? I needed the Mona Lisa.";
+                    drawAttempt++;
                     progress = 18;
+                    switch (drawAttempt)
+                    {
+                        case 1:
+                            text = "Why do I have a " + text + "? I needed The Mona Lisa.";
+                            break;
+                        case 2:
+                            text = "I need The Mona Lisa. M O N A L I S A";
+                            break;
+                        case 3:
+                            text = "Please, it's not that hard";
+                            break;
+                        default:
+                            text = "I give up, a " + text + " will do...";
+                            progress = 20;
+                            break;
+                    }
                 }
 
-                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputIncomplete);
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 21:
                 // object 2
-                text = "The third item the player has is the Mona Lisa, how should they use it to help Computer?";
-
+                text = "The third item the player has is an " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
+                drawAttempt = 0;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);
                 break;
             case 22:
                 // object 2
-                text = "Okay";
+                text = "Are we done?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
@@ -186,13 +236,13 @@ public partial class StoryManager
                 break;
             case 24:
                 // object 2
-                text = "I'm glad";
+                text = "I'm glad, but this sure was tiring.";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 25:
                 // object 2
-                text = "After all this ruckus, it sure is time to get me an ol' cup o' Joe";
+                text = "After all this ruckus, it is time to get me an ol' cup o' Joe";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
                 break;
@@ -202,7 +252,7 @@ public partial class StoryManager
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "";
                 storyPoint = StoryPoint.Coffee;
-                progress = 0;
+                progress = -1;
                 break;
         }
 

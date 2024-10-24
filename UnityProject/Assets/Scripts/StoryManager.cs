@@ -43,11 +43,12 @@ public partial class StoryManager : MonoBehaviour
     private string LastInputText;
     private string LastRecognizedObjectString;
     private string LastLLMOutputText;
-
+    private int drawAttempt = 0;
+    
     private CharacterStruct activeCharacter;
     private CharacterStruct sideCharacter;
 
-    private StoryPoint storyPoint = StoryPoint.Introduction;
+    private StoryPoint storyPoint = StoryPoint.Computer;
     private int progress = 0;
 
     public void Start()
