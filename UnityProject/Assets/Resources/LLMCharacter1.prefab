@@ -79,7 +79,7 @@ MonoBehaviour:
   ignoreEos: 0
   nKeep: -1
   stop: []
-  playerName: player
+  playerName: John
   AIName: Gnoblin
   prompt: 'A chat between a regular office worker, Mr. Shrimp,  and an Goblin pretending
     to be a human office worker. The Goblin, Gnorp, tries to convince everyone that

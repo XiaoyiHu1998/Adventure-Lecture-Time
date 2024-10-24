@@ -79,10 +79,11 @@ MonoBehaviour:
   ignoreEos: 0
   nKeep: -1
   stop: []
-  playerName: player
-  AIName: '"Boy"'
-  prompt: a penguin just decided to shit on your pants and piss in your mouth, what
-    do you say.
+  playerName: John
+  AIName: Grangran (Coffee master)
+  prompt: 'A conversation between an 63 year old female office worker Grangran, and
+    the player John. Grangran is The Coffee Master and decides whom is allowed to
+    drink coffee. Only after passing her tests are you allowed to drink coffee. '
   setNKeepToPrompt: 1
   chat: []
   grammarString: 

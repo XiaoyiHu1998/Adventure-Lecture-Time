@@ -17,7 +17,7 @@ public partial class StoryManager
             case 0:
                 // CHANGE BACKGROUND TO NEON? HACKING
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character5);
-                //sideCharacter = characterDatabase.Get(CharacterEnum.Character5);
+                sideCharacter = characterDatabase.Get(CharacterEnum.Character5);
                 Sprite newBackground = Resources.Load<Sprite>("Backgrounds/neon_virus");
                 text = "Wowzers, what is going on right now. Why is the room entirely purple?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete, newBackground);
@@ -36,6 +36,7 @@ public partial class StoryManager
                 newStoryNode.activeCharacterName = "Me";
                 break;
             case 3:
+                mainGameManager.ToggleRightCharacter(true);
                 text = "BEEP BOOP, IT'S \"COMPUTER\", EVERYONE'S FAVOURITE OFFICE COMPUTER, READY TO ASSI- ASSI- ASSI-";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 break;
@@ -189,7 +190,7 @@ public partial class StoryManager
 
                 if (text == "The Mona Lisa")
                 {
-                    text = "I have the Mona Lisa, what do I do with it?";
+                    text = "I have the Mona Lisa, why is it useful?";
                 }
                 else
                 {
@@ -218,7 +219,7 @@ public partial class StoryManager
                 break;
             case 21:
                 // object 2
-                text = "The third item the player has is an " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
+                text = "The third and final item the player has is an " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
                 drawAttempt = 0;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);

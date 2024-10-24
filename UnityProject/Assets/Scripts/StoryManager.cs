@@ -16,7 +16,8 @@ public enum StoryPoint
 {
     Introduction,
     Computer,
-    Coffee
+    Coffee,
+    Gnoblin
 }
 
 public struct StoryNode
@@ -48,7 +49,7 @@ public partial class StoryManager : MonoBehaviour
     private CharacterStruct activeCharacter;
     private CharacterStruct sideCharacter;
 
-    private StoryPoint storyPoint = StoryPoint.Introduction;
+    private StoryPoint storyPoint = StoryPoint.Computer;
     private int progress = 0;
 
     public void Start()
@@ -88,6 +89,9 @@ public partial class StoryManager : MonoBehaviour
                 break;
             case StoryPoint.Coffee:
                 newStoryNode = CoffeeStory();
+                break;
+            case StoryPoint.Gnoblin:
+                newStoryNode = GnoblinStory();
                 break;
         }
         

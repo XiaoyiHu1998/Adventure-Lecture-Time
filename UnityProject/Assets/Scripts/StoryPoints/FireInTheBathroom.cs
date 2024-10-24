@@ -26,9 +26,22 @@ public partial class StoryManager
             case 2: 
                 // Player responds to the manager
                 text = LastInputText;
-
-                newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
-                GenerateMessage(activeCharacter.llmCharacter, text);
+                if (!string.IsNullOrEmpty(text) && text.Length > 1)  // Ensure the string is not null or empty
+                {
+                    text = text.Substring(0, text.Length - 1);
+                }
+                if (text.Equals("Gnoblin", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    storyPoint = StoryPoint.Gnoblin;
+                    progress = -1;
+                    newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                    newStoryNode.activeCharacterName = "???";
+                }
+                else
+                {
+                    newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
+                    GenerateMessage(activeCharacter.llmCharacter, text);
+                }
                 break;
             case 3:
                 // Manager tells the player to listen to the colleague
@@ -44,7 +57,7 @@ public partial class StoryManager
             case 5:
                 // Y.H. introduces herself
                 SwapActiveCharacter();
-                text = "What do you mean who am I? I am Ykhytlesh Heartshadowsmithforgerofall (Lead developer of all in the dark) The darkrealms foremost lead architect designer of all systems incredible.";
+                text = "What do you mean who am I? I am Ykhytlesh Heartshadowsmith (Lead developer of all in the dark). The darkrealms foremost lead architect designer of all systems incredible.";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 break;
             case 6:

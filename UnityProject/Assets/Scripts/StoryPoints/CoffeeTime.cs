@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public partial class StoryManager
@@ -19,18 +20,32 @@ public partial class StoryManager
         {
             case 0:
                 // Manager wakes the player up
-                
-                mainGameManager.ToggleLeftCharacter(true);
-                mainGameManager.ToggleRightCharacter(true);
+                activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
+                mainGameManager.ToggleLeftCharacter(false);
+                mainGameManager.ToggleRightCharacter(false);
 
                 Sprite newBackground = Resources.Load<Sprite>("Backgrounds/coffee");
                 text = "Ah I am really feeling that coffee right about now";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete, newBackground);
-            break;
+                newStoryNode.activeCharacterName = "Me";
+                break;
+            case 1:
+                mainGameManager.ToggleLeftCharacter(true);
+                text = "You! You must be new here!";
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                break;
+            case 2:
+                text = "You are only allowed to drink coffee once I deem you worthy. I am the coffee master, and you must prove yourself to me.";
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                break;
+            case 3:
+                text = "woop";
+                newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                break;
             default:
-                newStoryNode = GenerateGenericNode("Out of dialogue...", StoryNodeType.TextInput);
-                progress = 0;
-            break;
+                newStoryNode = GenerateGenericNode("Thanks for playing our game! Oh, and write \"Gnoblin\" in the first dialogue box :)", StoryNodeType.OutputComplete);
+                mainGameManager.LoadMainMenu();
+                break;
         }
 
         return newStoryNode;

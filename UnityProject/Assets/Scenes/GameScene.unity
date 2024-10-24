@@ -195,6 +195,7 @@ MonoBehaviour:
   drawingManager: {fileID: 7721495651603250232}
   mainCanvas: {fileID: 494431979}
   mainCanvasGroup: {fileID: 1334157121}
+  scrollRect: {fileID: 1352696294}
   mainPanelImage: {fileID: 1776456260}
   characterPanelLeftImage: {fileID: 1873411656}
   characterPanelRightImage: {fileID: 1558280608}
@@ -732,6 +733,10 @@ PrefabInstance:
         to be a human office worker. The Goblin, Gnorp, tries to convince everyone
         that he is a regular office worker, however this does not always work. The
         more he talks the more he accidentally reveals his goblin characterics.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675029205296193819, guid: e07649e79819257489cbc0a669857d5d, type: 3}
+      propertyPath: playerName
+      value: John
       objectReference: {fileID: 0}
     - target: {fileID: 6719072085168287395, guid: e07649e79819257489cbc0a669857d5d, type: 3}
       propertyPath: m_RootOrder
@@ -1606,21 +1611,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStructs:
-  - name: '"Boy"'
-    sprite: {fileID: 21300000, guid: f43ad94788ee7a149a47459e0ada9cb2, type: 3}
+  - name: Grangran
+    sprite: {fileID: 21300000, guid: 7033030bac42cb2429b47d6782b7d5c6, type: 3}
     llmCharacter: {fileID: 1157607302}
   - name: Gnoblin
     sprite: {fileID: 21300000, guid: 94a089f526e7c4d449d52a85fb76e1c1, type: 3}
     llmCharacter: {fileID: 301555752}
   - name: Manager
-    sprite: {fileID: 21300000, guid: 054336c0a45ee984ba66bf367357810b, type: 3}
+    sprite: {fileID: 21300000, guid: 9d33942d62391ee40a53d3ac15439a82, type: 3}
     llmCharacter: {fileID: 1359922535}
-  - name: ' Ykhytlesh heartshadowsmithforgerofall (Lead developer of all in the dark)'
-    sprite: {fileID: 21300000, guid: d846c08a04cb4374791500b31aa2e8f9, type: 3}
+  - name: Ykhytlesh Heartshadow (Lead developer of all in the dark)
+    sprite: {fileID: 21300000, guid: ae4b9cb8c7f79e542802a007e551009a, type: 3}
     llmCharacter: {fileID: 1203197044}
   - name: Narrator
-    sprite: {fileID: 21300000, guid: 8fb5b2b471b16e047980f2cc5531e7af, type: 3}
+    sprite: {fileID: 21300000, guid: ceaa26d7f0d0c7f4e93f6716e82b047c, type: 3}
     llmCharacter: {fileID: 1100318877}
+  - name: Computer
+    sprite: {fileID: 21300000, guid: ceaa26d7f0d0c7f4e93f6716e82b047c, type: 3}
+    llmCharacter: {fileID: 1655988980}
 --- !u!114 &724394382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2160,7 +2168,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1742058426}
   m_HandleRect: {fileID: 1742058425}
   m_Direction: 2
-  m_Value: 0.99999887
+  m_Value: 0.9999988
   m_Size: 0.11669533
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2468,8 +2476,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228609044}
   m_HandleRect: {fileID: 1228609043}
   m_Direction: 0
-  m_Value: 0.00000005643617
-  m_Size: 0.26136813
+  m_Value: 0
+  m_Size: 0.26136816
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3088,6 +3096,10 @@ PrefabInstance:
       propertyPath: llm
       value: 
       objectReference: {fileID: 180999214}
+    - target: {fileID: 2332616233682889176, guid: 578bf37221af0a446aaf82e0e142ee37, type: 3}
+      propertyPath: playerName
+      value: John
+      objectReference: {fileID: 0}
     - target: {fileID: 2332616233682889177, guid: 578bf37221af0a446aaf82e0e142ee37, type: 3}
       propertyPath: m_Name
       value: LLMCharacter0
@@ -3413,12 +3425,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2675029205296193819, guid: 56d5be744c03e9d4c90a751b1d3a1287, type: 3}
       propertyPath: prompt
-      value: 'A chat between the manager "Manager" and a sleepy office worker, John.
+      value: A chat between the manager "Manager" and a sleepy office worker, John.
         The manager just caught the player sleeping at work, and is annoyed at the
         player since he is slacking off at work. The manager just woke John up, and
-        is reacting to him making up an excuse, the manager doesn''t believe him.
-
-'
+        is reacting to him making up an excuse, the manager doesn't believe him.
       objectReference: {fileID: 0}
     - target: {fileID: 2675029205296193819, guid: 56d5be744c03e9d4c90a751b1d3a1287, type: 3}
       propertyPath: playerName
@@ -3729,8 +3739,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 235, y: -98}
-  m_SizeDelta: {x: 30, y: 270.11743}
+  m_AnchoredPosition: {x: 225, y: -100}
+  m_SizeDelta: {x: 150, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1558280608
 MonoBehaviour:
@@ -3754,7 +3764,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 94a089f526e7c4d449d52a85fb76e1c1, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -3860,6 +3870,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1655988980 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2675029205296193819, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+  m_PrefabInstance: {fileID: 1958856134}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f6c87a428fd5d0be9bbc686bdc8c3c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1742058424
 GameObject:
   m_ObjectHideFlags: 0
@@ -4150,7 +4171,7 @@ RectTransform:
   m_GameObject: {fileID: 1873411654}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1334157120}
@@ -4158,8 +4179,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -235, y: -98}
-  m_SizeDelta: {x: 30, y: 270.11743}
+  m_AnchoredPosition: {x: -225, y: -100}
+  m_SizeDelta: {x: 150, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1873411656
 MonoBehaviour:
@@ -4183,7 +4204,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: f43ad94788ee7a149a47459e0ada9cb2, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -4255,6 +4276,63 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1001 &1958856134
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 531233437658813320, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_Name
+      value: LLMCharacter5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 469.28857
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 268.06274
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 47.527725
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719072085168287395, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5de81602947e2954fb2131897a3a2e6b, type: 3}
 --- !u!1 &2086979062
 GameObject:
   m_ObjectHideFlags: 0

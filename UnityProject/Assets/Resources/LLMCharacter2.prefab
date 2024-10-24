@@ -79,9 +79,9 @@ MonoBehaviour:
   ignoreEos: 0
   nKeep: -1
   stop: []
-  playerName: Me
+  playerName: John
   AIName: Manager
-  prompt: 'A chat between a sleepy office worker, "Me",  and the manager. The manager
+  prompt: 'A chat between a sleepy office worker, John,  and the manager. The manager
     just caught the player sleeping at work, and is annoyed at the player since he
     is slacking off at work.
 

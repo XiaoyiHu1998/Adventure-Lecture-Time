@@ -79,11 +79,11 @@ MonoBehaviour:
   ignoreEos: 0
   nKeep: -1
   stop: []
-  playerName: Me
-  AIName: ' Ykhytlesh heartshadowsmithforgerofall (Lead developer of all in the dark)'
-  prompt: A chat between a sleepy office worker, "Me",  and the  Y H, short for Ykhytlesh
-    Heartshadowsmithforgerofall (Lead developer of all in the dark). She is a bossy
-    coworker that thinks the player is not doing his work well enough.
+  playerName: John
+  AIName: Ykhytlesh Heartshadow (Lead developer of all in the dark)
+  prompt: A chat between a sleepy office worker, John,  and the  Y H, short for Ykhytlesh
+    Heartshadow. She is a bossy coworker that thinks the player is not doing his
+    work well enough.
   setNKeepToPrompt: 1
   chat: []
   grammarString: 
