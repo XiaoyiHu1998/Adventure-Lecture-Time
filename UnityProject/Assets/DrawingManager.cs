@@ -6,6 +6,9 @@ public class DrawingManager : MonoBehaviour
 {
     public MainGameManager mainGameManager;
     public GameObject drawingCanvas;
+    public string targetObject = null; // The object that the player should draw
+    public int topNTargetObjects = 3; // How high the target object should be in the list of recognized objects
+    public bool allowNonTargetObjects = true; // Whether the player can submit a recognized object that is not the target object
     private string m_ObjectString;
 
     private void Start()
