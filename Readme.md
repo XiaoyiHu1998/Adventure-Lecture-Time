@@ -6,5 +6,6 @@
 - Download the [v1-5-pruned-emaonly](https://huggingface.co/wsj1995/stable-diffusion-models/blob/4bdfc26ef64249f9d55d28e0db9a0ee638c6a309/v1-5-pruned-emaonly.safetensors) model and place it in the `models/Stable-diffusion` folder of AUTOMATIC1111
 
 # Running
-- Run the run.bat file in `sketch-rnn/predict` to start the sketch-rnn server
+- Docker needs to be running
+- Run the run_predict.bat file to start the sketch-rnn server
 - Run AUTOMATIC1111 with the `--api` command line argument
