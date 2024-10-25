@@ -149,7 +149,7 @@ public class MainGameManager : MonoBehaviour
                 {
                     StopCoroutine(textRevealCoroutine);
                 }
-                textRevealCoroutine = StartCoroutine(RevealText(mainText, newText));
+                textRevealCoroutine = StartCoroutine(RevealText(mainText, fullMainPanelText, newText));
                 fullMainPanelText = newText;
                 break;
 
@@ -159,14 +159,26 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RevealText(TMP_Text textComponent, string fullText)
+    private IEnumerator RevealText(TMP_Text textComponent, string prevText, string fullText)
     {
-        textComponent.text = "";
-        foreach (char letter in fullText.ToCharArray())
+        int i;
+        if (prevText != null && fullText.StartsWith(prevText))
         {
-            textComponent.text += letter;
+            textComponent.text = prevText;
+            i = prevText.Length;
+        }
+        else
+        {
+            textComponent.text = "";
+            i = 0;
+        }
+
+        for (; i < fullText.Length; i++)
+        {
+            textComponent.text += fullText[i];
             yield return new WaitForSeconds(0.05f);
         }
+
         Canvas.ForceUpdateCanvases();
         scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
         textRevealCoroutine = null;
