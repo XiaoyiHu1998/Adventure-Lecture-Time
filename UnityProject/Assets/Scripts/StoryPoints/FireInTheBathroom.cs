@@ -15,7 +15,7 @@ public partial class StoryManager
             case 0:
                 // Manager wakes the player up
                 mainGameManager.ToggleLeftCharacter(true);
-                mainGameManager.ToggleRightCharacter(true);
+                mainGameManager.ToggleRightCharacter(false);
 
                 text = "Hey wake up, we've got work to do. why are you sleeping on the job?";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
@@ -26,10 +26,10 @@ public partial class StoryManager
             case 2: 
                 // Player responds to the manager
                 text = LastInputText;
-                if (!string.IsNullOrEmpty(text) && text.Length > 1)  // Ensure the string is not null or empty
-                {
-                    text = text.Substring(0, text.Length - 1);
-                }
+                //if (!string.IsNullOrEmpty(text) && text.Length > 1)  // Ensure the string is not null or empty
+                //{
+                //    text = text.Substring(0, text.Length - 1);
+                //}
                 if (text.Equals("Gnoblin", System.StringComparison.OrdinalIgnoreCase))
                 {
                     storyPoint = StoryPoint.Gnoblin;
@@ -57,6 +57,7 @@ public partial class StoryManager
             case 5:
                 // Y.H. introduces herself
                 SwapActiveCharacter();
+                mainGameManager.ToggleRightCharacter(true);
                 text = "What do you mean who am I? I am Ykhytlesh Heartshadowsmith (Lead developer of all in the dark). The darkrealms foremost lead architect designer of all systems incredible.";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 break;
@@ -110,7 +111,7 @@ public partial class StoryManager
                 break;
             case 13:
                 // Player uses the object
-                text = "John tries to put out a bathroom that is on fire using a: " + LastRecognizedObjectString;
+                text = "John tries to put out an office restroom that is on fire using a: " + LastRecognizedObjectString;
 
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
                 GenerateMessage(activeCharacter.llmCharacter, text);

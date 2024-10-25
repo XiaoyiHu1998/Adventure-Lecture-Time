@@ -56,6 +56,8 @@ public partial class StoryManager
                 text = "I can do that, let me get one real quick";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
                 newStoryNode.activeCharacterName = "Me";
+                mainGameManager.drawingManager.targetObject = "hammer";
+
                 break;
             case 7:
                 // Player answers Y.H.
@@ -64,7 +66,7 @@ public partial class StoryManager
             case 8:
                 // Y.H. answers the question dismissively
                 text = LastRecognizedObjectString;
-
+                
                 if (text == "hammer")
                 {
                     text = "I have a hammer, here you go";
@@ -96,7 +98,7 @@ public partial class StoryManager
                 break;
             case 9:
                 // Player says he's going to the bathroom
-                
+                mainGameManager.drawingManager.targetObject = null;
                 text = "The first item the player has is a " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
                 drawAttempt = 0;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
@@ -112,6 +114,7 @@ public partial class StoryManager
                 // object 1
                 text = "STATUS IMPROVING. NEXT I NEED A FOOD. GET ME AN APPLE";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                mainGameManager.drawingManager.targetObject = "apple";
                 break;
             case 12:
                 // object 1
@@ -153,6 +156,7 @@ public partial class StoryManager
                 break;
             case 14:
                 // object 2
+                mainGameManager.drawingManager.targetObject = null;
                 text = "The second item the player has is an " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
                 drawAttempt = 0;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);
@@ -179,6 +183,7 @@ public partial class StoryManager
                 // object 2
                 text = "THE MONA LISA";
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete);
+                mainGameManager.drawingManager.targetObject = "The Mona Lisa";
                 break;
             case 19:
                 // object 2
@@ -220,6 +225,7 @@ public partial class StoryManager
                 break;
             case 21:
                 // object 2
+                mainGameManager.drawingManager.targetObject = null;
                 text = "The third and final item the player has is an " + LastRecognizedObjectString + ", how do you use it to fix yourself, keep it brief? Any leaps in logic are allowed.";
                 drawAttempt = 0;
                 newStoryNode = GenerateGenericNode(activeCharacter.name + " is thinking...", StoryNodeType.OutputIncomplete);

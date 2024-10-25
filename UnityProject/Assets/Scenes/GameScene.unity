@@ -527,6 +527,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: LLMCharacter4
       objectReference: {fileID: 0}
+    - target: {fileID: 2675029205296193819, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
+      propertyPath: prompt
+      value: The Narrator is a non physical being that explains what's happening
+        in the story. The narrator always describes the story from a third person
+        perspective. In this story John will find himself in precarious situations
+        that he needs to solve. The Narrator is given an object name and will describe
+        in excruciating detail how John fixes the situation using this object. Any
+        leaps of logic are allowed as longs as it ends with John resolving the situation.
+        It is important that John will pass EVERY test no matter the answer.
+      objectReference: {fileID: 0}
     - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -631,7 +641,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ' Ykhytlesh heartshadowsmithforgerofall (Lead developer of all in the dark)'
+  m_text: Computer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -725,14 +735,14 @@ PrefabInstance:
       objectReference: {fileID: 180999214}
     - target: {fileID: 2675029205296193819, guid: e07649e79819257489cbc0a669857d5d, type: 3}
       propertyPath: AIName
-      value: Gnoblin
+      value: Gnorp
       objectReference: {fileID: 0}
     - target: {fileID: 2675029205296193819, guid: e07649e79819257489cbc0a669857d5d, type: 3}
       propertyPath: prompt
-      value: A chat between a regular office worker, Mr. Shrimp,  and an Goblin pretending
+      value: A chat between a regular office worker, John,  and a Gnoblin pretending
         to be a human office worker. The Goblin, Gnorp, tries to convince everyone
         that he is a regular office worker, however this does not always work. The
-        more he talks the more he accidentally reveals his goblin characterics.
+        more he talks the more he accidentally reveals his gnoblin characterics.
       objectReference: {fileID: 0}
     - target: {fileID: 2675029205296193819, guid: e07649e79819257489cbc0a669857d5d, type: 3}
       propertyPath: playerName
@@ -2169,8 +2179,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1742058426}
   m_HandleRect: {fileID: 1742058425}
   m_Direction: 2
-  m_Value: 0.99999917
-  m_Size: 0.84784454
+  m_Value: 1
+  m_Size: 0.8478446
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
