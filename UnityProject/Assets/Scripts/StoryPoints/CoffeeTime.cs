@@ -96,7 +96,7 @@ public partial class StoryManager
                 newStoryNode.activeCharacterName = "Narrator";
                 break;
             case 16:
-                text = "ZZzzzzzz.... Mimimimimi..... Zzzzzz.... I should maybe write \"Gnoblin\" in the first dialogue box.... Zzzzzzz.....";
+                text = "ZZzzzzzz.... Mimimimimi..... Zzzzzz.... I should maybe write Gnoblin in the first dialogue box.... Zzzzzzz.....";
                 Sprite nbg = Resources.Load<Sprite>("Backgrounds/Small_office");
                 newStoryNode = GenerateGenericNode(text, StoryNodeType.OutputComplete, nbg);
                 newStoryNode.activeCharacterName = "Me";
