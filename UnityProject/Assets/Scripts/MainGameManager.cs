@@ -39,6 +39,7 @@ public class MainGameManager : MonoBehaviour
 
     private bool canClickContinueButton = false;
     private Coroutine textRevealCoroutine;
+    private string fullMainPanelText;
 
     public void LoadMainMenu()
     {
@@ -53,7 +54,14 @@ public class MainGameManager : MonoBehaviour
 
     public void ContinueStoryButton()
     {
-        if(canClickContinueButton)
+        if (textRevealCoroutine != null)
+        {
+            StopCoroutine(textRevealCoroutine);
+            textRevealCoroutine = null;
+            GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = fullMainPanelText;
+
+        }
+        else if(canClickContinueButton)
         {
             ContinueStory();
         }
@@ -142,6 +150,7 @@ public class MainGameManager : MonoBehaviour
                     StopCoroutine(textRevealCoroutine);
                 }
                 textRevealCoroutine = StartCoroutine(RevealText(mainText, newText));
+                fullMainPanelText = newText;
                 break;
 
             case PanelText.NamePanelText:
@@ -160,6 +169,7 @@ public class MainGameManager : MonoBehaviour
         }
         Canvas.ForceUpdateCanvases();
         scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
+        textRevealCoroutine = null;
     }
 
     public void ToggleLeftCharacter(bool active)
