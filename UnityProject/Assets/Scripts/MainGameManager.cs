@@ -192,7 +192,7 @@ public class MainGameManager : MonoBehaviour
             textComponent.text = currentMainPanelText;
             Canvas.ForceUpdateCanvases();
             scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.04f);
         }
 
         textRevealCoroutine = null;
