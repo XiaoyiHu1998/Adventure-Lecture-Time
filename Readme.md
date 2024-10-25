@@ -9,3 +9,4 @@
 - Docker needs to be running
 - Run the run_predict.bat file to start the sketch-rnn server
 - Run AUTOMATIC1111 with the `--api` command line argument
+- Start the `Adventure Lecture Time.exe` in the `Build` folder.
