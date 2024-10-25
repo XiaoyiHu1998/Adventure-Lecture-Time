@@ -59,7 +59,8 @@ public class MainGameManager : MonoBehaviour
             StopCoroutine(textRevealCoroutine);
             textRevealCoroutine = null;
             GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = fullMainPanelText;
-
+            Canvas.ForceUpdateCanvases();
+            scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
         }
         else if(canClickContinueButton)
         {
@@ -176,11 +177,11 @@ public class MainGameManager : MonoBehaviour
         for (; i < fullText.Length; i++)
         {
             textComponent.text += fullText[i];
+            Canvas.ForceUpdateCanvases();
+            scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
             yield return new WaitForSeconds(0.05f);
         }
 
-        Canvas.ForceUpdateCanvases();
-        scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
         textRevealCoroutine = null;
     }
 
