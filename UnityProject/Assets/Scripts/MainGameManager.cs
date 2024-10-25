@@ -40,6 +40,7 @@ public class MainGameManager : MonoBehaviour
     private bool canClickContinueButton = false;
     private Coroutine textRevealCoroutine;
     private string fullMainPanelText;
+    private string currentMainPanelText = "";
 
     public void LoadMainMenu()
     {
@@ -58,6 +59,7 @@ public class MainGameManager : MonoBehaviour
         {
             StopCoroutine(textRevealCoroutine);
             textRevealCoroutine = null;
+            currentMainPanelText = fullMainPanelText;
             GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = fullMainPanelText;
             Canvas.ForceUpdateCanvases();
             StartCoroutine(SetScrollPositionToBottom());
@@ -160,7 +162,7 @@ public class MainGameManager : MonoBehaviour
                 {
                     StopCoroutine(textRevealCoroutine);
                 }
-                textRevealCoroutine = StartCoroutine(RevealText(mainText, fullMainPanelText, newText));
+                textRevealCoroutine = StartCoroutine(RevealText(mainText, currentMainPanelText, newText));
                 fullMainPanelText = newText;
                 break;
 
@@ -173,20 +175,21 @@ public class MainGameManager : MonoBehaviour
     private IEnumerator RevealText(TMP_Text textComponent, string prevText, string fullText)
     {
         int i;
-        if (prevText != null && fullText.StartsWith(prevText))
+        if (fullText.StartsWith(prevText))
         {
-            textComponent.text = prevText;
             i = prevText.Length;
         }
         else
         {
+            currentMainPanelText = "";
             textComponent.text = "";
             i = 0;
         }
 
         for (; i < fullText.Length; i++)
         {
-            textComponent.text += fullText[i];
+            currentMainPanelText += fullText[i];
+            textComponent.text = currentMainPanelText;
             Canvas.ForceUpdateCanvases();
             scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
             yield return new WaitForSeconds(0.05f);
