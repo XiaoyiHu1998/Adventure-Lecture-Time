@@ -7,6 +7,10 @@
 
 # Running
 - Docker needs to be running
-- Run the run_predict.bat file to start the sketch-rnn server
+- Run the `run_predict.bat` file to start the sketch-rnn server
 - Run AUTOMATIC1111 with the `--api` command line argument
 - Start the `Adventure Lecture Time.exe` in the `Build` folder.
+
+# Source code
+The source code for the game can be found in the `UnityProject` folder.
+The source code for the sketch-rnn server that predict the object in a drawing can be found in the `sketch-rnn` folder.
