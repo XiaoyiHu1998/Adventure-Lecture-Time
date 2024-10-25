@@ -15,6 +15,7 @@ public partial class StoryManager
         switch (progress)
         {
             case 0:
+                PlayNewBGMTrack((AudioClip)Resources.Load("Audio\\Digital Doom"));
                 // CHANGE BACKGROUND TO NEON? HACKING
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character5);
                 sideCharacter = characterDatabase.Get(CharacterEnum.Character5);

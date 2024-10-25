@@ -85,6 +85,7 @@ public partial class StoryManager
             case 10:
                 // CHANGE BACKGROUND SPRITE
                 // Change characters to blank/empty
+                PlayNewBGMTrack((AudioClip)Resources.Load("Audio\\Fuego en el Bano"));
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character4);
                 mainGameManager.ToggleLeftCharacter(false);
                 mainGameManager.ToggleRightCharacter(false);

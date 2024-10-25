@@ -1644,6 +1644,7 @@ MonoBehaviour:
   BackgroundSprite: {fileID: 21300000, guid: ae706e1cd09a51e4abd2cbd62ffb2d30, type: 3}
   mainGameManager: {fileID: 168302086}
   characterDatabase: {fileID: 724394380}
+  bgmPlayer: {fileID: 1135529336}
 --- !u!4 &724394383
 Transform:
   m_ObjectHideFlags: 0
@@ -2168,7 +2169,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1742058426}
   m_HandleRect: {fileID: 1742058425}
   m_Direction: 2
-  m_Value: 1.0000002
+  m_Value: 0.99999917
   m_Size: 0.84784454
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2477,7 +2478,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1228609043}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.9999998
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

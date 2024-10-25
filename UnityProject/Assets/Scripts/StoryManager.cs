@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LLMUnity;
 using System;
+using UnityEngine.Timeline;
 
 public enum StoryNodeType
 {
@@ -38,6 +39,7 @@ public partial class StoryManager : MonoBehaviour
 
     public MainGameManager mainGameManager;
     public CharacterDatabase characterDatabase;
+    public AudioSource bgmPlayer;
 
     private StoryNode initialStoryNode;
     private StoryNode currentStoryNode;
@@ -49,8 +51,13 @@ public partial class StoryManager : MonoBehaviour
     private CharacterStruct activeCharacter;
     private CharacterStruct sideCharacter;
 
-    private StoryPoint storyPoint = StoryPoint.Introduction;
+    private StoryPoint storyPoint = StoryPoint.Computer;
     private int progress = 0;
+
+    public void Awake()
+    {
+        PlayNewBGMTrack((AudioClip)Resources.Load("Audio\\Paper Dreams"));
+    }
 
     public void Start()
     {
@@ -162,5 +169,11 @@ public partial class StoryManager : MonoBehaviour
     public void SetRecognizedDrawingObjectString(string recognizedObject)
     {
         LastRecognizedObjectString = recognizedObject;
+    }
+
+    private void PlayNewBGMTrack(AudioClip audioClip)
+    {
+        bgmPlayer.clip = audioClip;
+        bgmPlayer.Play();
     }
 }

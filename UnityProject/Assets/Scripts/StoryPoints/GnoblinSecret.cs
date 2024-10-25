@@ -12,6 +12,7 @@ public partial class StoryManager
         switch (progress)
         {
             case 0:
+                PlayNewBGMTrack((AudioClip)Resources.Load("Audio\\Paper Dreams"));
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character1);
                 mainGameManager.ToggleLeftCharacter(true);
                 mainGameManager.ToggleRightCharacter(false);

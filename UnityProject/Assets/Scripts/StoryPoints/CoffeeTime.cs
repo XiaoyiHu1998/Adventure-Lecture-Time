@@ -19,6 +19,7 @@ public partial class StoryManager
         switch (progress)
         {
             case 0:
+                PlayNewBGMTrack((AudioClip)Resources.Load("Audio\\Paper Dreams"));
                 // Manager wakes the player up
                 activeCharacter = characterDatabase.Get(CharacterEnum.Character0);
                 sideCharacter = characterDatabase.Get(CharacterEnum.Character4);
