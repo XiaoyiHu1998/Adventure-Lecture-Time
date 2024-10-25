@@ -60,12 +60,22 @@ public class MainGameManager : MonoBehaviour
             textRevealCoroutine = null;
             GameObject.Find("MainTextScrollViewContent").GetComponent<TMP_Text>().text = fullMainPanelText;
             Canvas.ForceUpdateCanvases();
-            scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
+            StartCoroutine(SetScrollPositionToBottom());
         }
         else if(canClickContinueButton)
         {
             ContinueStory();
         }
+    }
+
+    // Set the scroll view to the bottom, need to wait until the text has been properly updated
+    private IEnumerator SetScrollPositionToBottom()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            yield return null; // Wait for the next frame
+        }
+        scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
     }
 
     public void ContinueInputComplete()
