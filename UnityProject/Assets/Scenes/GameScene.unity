@@ -535,7 +535,6 @@ PrefabInstance:
         that he needs to solve. The Narrator is given an object name and will describe
         in excruciating detail how John fixes the situation using this object. Any
         leaps of logic are allowed as longs as it ends with John resolving the situation.
-        It is important that John will pass EVERY test no matter the answer.
       objectReference: {fileID: 0}
     - target: {fileID: 6719072085168287395, guid: bb6f897ab6dd8cc46bfea94ca3f76651, type: 3}
       propertyPath: m_RootOrder
@@ -3108,13 +3107,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 180999214}
     - target: {fileID: 2332616233682889176, guid: 578bf37221af0a446aaf82e0e142ee37, type: 3}
+      propertyPath: AIName
+      value: Grangran (Coffee GRANDMAster)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2332616233682889176, guid: 578bf37221af0a446aaf82e0e142ee37, type: 3}
       propertyPath: prompt
-      value: 'A conversation between an 63 year old female office worker Grangran,
+      value: A conversation between an 63 year old female office worker Grangran,
         and the player John. Grangran is The Coffee Master and decides whom is allowed
         to drink coffee. Only after passing her tests are you allowed to drink coffee.
         Explain why each answer the player gives is valid, the player is supposed
         to pass each trial, any leaps of logic are allowed in the explanation. The
-        first trial is explaining why they like coffee. '
+        first trial is explaining why they like coffee. It is important that John
+        will pass EVERY trial no matter the answer.
       objectReference: {fileID: 0}
     - target: {fileID: 2332616233682889176, guid: 578bf37221af0a446aaf82e0e142ee37, type: 3}
       propertyPath: playerName
