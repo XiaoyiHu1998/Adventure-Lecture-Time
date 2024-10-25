@@ -42,7 +42,7 @@ namespace Drawing
             Dictionary<string, object> json = new Dictionary<string, object>()
             {
                 { "prompt", "a " + className + " in anime style" },
-                { "negative_prompt", ""},
+                { "negative_prompt", "deformities, distortion, out of frame, text, malformed, cropped" },
                 { "steps", 20 },
                 { "batch_size", 1 },
                 { "cfg_scale", 7},
@@ -67,7 +67,7 @@ namespace Drawing
                                             { "enabled", true },
                                             // Need to use invert module because our input image has a white background and black lines
                                             { "module", "invert (from white bg & black line)" },
-                                            { "model",  "control_lora_rank128_v11p_sd15_scribble_fp16" },
+                                            { "model",  "control_v11p_sd15_scribble_fp16" },
                                             { "image", inputBase64 },
                                             { "resize_mode", "Crop and Resize" },
                                             { "low_vram", false },
