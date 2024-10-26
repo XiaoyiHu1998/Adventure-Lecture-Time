@@ -248,7 +248,7 @@ namespace Drawing
         // </summary>
         public void SubmitDrawing()
         {
-            if (strokes.Count == predictions.Count)
+            if (strokes.Count == predictions.Count && predictions.Count > 0)
             {
                 gameObject.GetComponent<ControlNet>().DrawControlNet(predictions[^1]);
                 bottomRightPanel.SetActive(false);
@@ -293,6 +293,24 @@ namespace Drawing
             {
                 return;
             }
+
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+            {
+                if (interactable)
+                {
+                    SubmitDrawing();
+                }
+                else if (readyToFinish)
+                {
+                    Finish();
+                }
+            }
+
+            if ((Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete)) && interactable)
+            {
+                UndoStroke();
+            }
+
             // Is the user holding down the left mouse button?
             bool mouse_held_down = Input.GetMouseButton(0);
             

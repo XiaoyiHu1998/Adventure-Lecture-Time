@@ -11,6 +11,8 @@
 - Run AUTOMATIC1111 with the `--api` command line argument
 - Start the `Adventure Lecture Time.exe` in the `Build` folder.
 
+Note: The game works best at an aspect ratio of 16:9.
+
 # Source code
 The source code for the game can be found in the `UnityProject` folder.
 The source code for the sketch-rnn server that predict the object in a drawing can be found in the `sketch-rnn` folder.

@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 
 public enum PanelImage
 {
@@ -38,6 +38,7 @@ public class MainGameManager : MonoBehaviour
     private Coroutine textRevealCoroutine;
     private string fullMainPanelText;
     private string currentMainPanelText = "";
+    private bool textActiveLastFrame = false;
 
     public void LoadMainMenu()
     {
@@ -65,6 +66,18 @@ public class MainGameManager : MonoBehaviour
         {
             ContinueStory();
         }
+    }
+
+    public void Update()
+    {
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) && !textActiveLastFrame)
+        {
+            // Prevent the Enter key from triggering the last clicked item
+            EventSystem.current.SetSelectedGameObject(null);
+
+            ContinueStoryButton();
+        }
+        textActiveLastFrame = textInputManager.textInput.activeInHierarchy;
     }
 
     // Set the scroll view to the bottom, need to wait until the text has been properly updated
@@ -171,27 +184,45 @@ public class MainGameManager : MonoBehaviour
 
     private IEnumerator RevealText(TMP_Text textComponent, string prevText, string fullText)
     {
-        int i;
-        if (fullText.StartsWith(prevText))
+        if (fullText.EndsWith("is thinking..."))
         {
-            i = prevText.Length;
+            currentMainPanelText = fullText.Substring(0, fullText.Length - 3);
+            while(true)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    currentMainPanelText += ".";
+                    textComponent.text = currentMainPanelText;
+                    Canvas.ForceUpdateCanvases();
+                    scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
+                    yield return new WaitForSeconds(0.2f);
+                }
+                currentMainPanelText = fullText.Substring(0, fullText.Length - 3);
+            }
         }
         else
         {
-            currentMainPanelText = "";
-            textComponent.text = "";
-            i = 0;
-        }
+            int i;
+            if (fullText.StartsWith(prevText))
+            {
+                i = prevText.Length;
+            }
+            else
+            {
+                currentMainPanelText = "";
+                textComponent.text = "";
+                i = 0;
+            }
 
-        for (; i < fullText.Length; i++)
-        {
-            currentMainPanelText += fullText[i];
-            textComponent.text = currentMainPanelText;
-            Canvas.ForceUpdateCanvases();
-            scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
-            yield return new WaitForSeconds(0.04f);
+            for (; i < fullText.Length; i++)
+            {
+                currentMainPanelText += fullText[i];
+                textComponent.text = currentMainPanelText;
+                Canvas.ForceUpdateCanvases();
+                scrollRect.verticalNormalizedPosition = 0f; // Set the scroll view to the bottom
+                yield return new WaitForSeconds(0.04f);
+            }
         }
-
         textRevealCoroutine = null;
     }
 

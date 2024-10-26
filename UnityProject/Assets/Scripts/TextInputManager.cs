@@ -20,23 +20,38 @@ public class TextInputManager : MonoBehaviour
         Debug.Log("enabling text input");
         textInputEnabled = true;
         textInput.SetActive(textInputEnabled);
+        FocusTextInput();
     }
 
     public void ToggleTextInput()
     {
         textInputEnabled = !textInputEnabled;
         textInput.SetActive(textInputEnabled);
+        if (textInputEnabled)
+        {
+            FocusTextInput();
+        }
     }
 
     public void HandleTextInputSubmitted()
     {
         string inputText = textInputField.text;
+        if (inputText == "")
+        {
+            FocusTextInput();
+            return;
+        }
         storyManager.SubmitInputText(inputText);
 
         Debug.Log(inputText);
         textInputField.text = "";
         ToggleTextInput();
+        storyManager.mainGameManager.ContinueInputComplete();
     }
 
-
+    private void FocusTextInput()
+    {
+        textInputField.Select(); // Set the input field as the selected UI element
+        textInputField.ActivateInputField(); // Activate the input field to start receiving input
+    }
 }
